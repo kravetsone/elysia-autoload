@@ -1,6 +1,6 @@
 {
     "name": "elysia-autoload",
-    "version": "0.0.1",
+    "version": "0.0.3",
     "author": "kravetsone",
     "description": "Plugin for Elysia which autoload all routes in directory",
     "keywords": [
@@ -12,8 +12,9 @@
         "filerouter",
         "autoroutes"
     ],
+    "main": "dist/index.js",
     "scripts": {
-        "prepublishOnly": "npm run lint:fix && tsc",
+        "prepublishOnly": "tsc",
         "lint": "eslint \"src/**/*.{ts,tsx,js,mjs,cjs}\"",
         "lint:fix": "eslint \"src/**/*.{ts,tsx,js,mjs,cjs}\" --fix"
     },
