@@ -1,0 +1,33 @@
+{
+    "name": "elysia-autoload",
+    "version": "0.0.1",
+    "author": "kravetsone",
+    "description": "Plugin for Elysia which autoload all routes in directory",
+    "keywords": [
+        "bun",
+        "elysia",
+        "autoimports",
+        "autoload",
+        "nextjs",
+        "filerouter",
+        "autoroutes"
+    ],
+    "scripts": {
+        "prepublishOnly": "npm run lint:fix && tsc",
+        "lint": "eslint \"src/**/*.{ts,tsx,js,mjs,cjs}\"",
+        "lint:fix": "eslint \"src/**/*.{ts,tsx,js,mjs,cjs}\" --fix"
+    },
+    "devDependencies": {
+        "bun-types": "latest",
+        "eslint": "^8.41.0",
+        "eslint-kit": "^10.0.0",
+        "prettier": "^3.0.0"
+    },
+    "peerDependencies": {
+        "typescript": "^5.0.0",
+        "elysia": "^0.8.0"
+    },
+    "files": [
+        "dist"
+    ]
+}
