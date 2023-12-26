@@ -3,62 +3,109 @@ import { existsSync, statSync } from "node:fs";
 import { join } from "node:path";
 import { getPath, sortByNestedParams, transformToUrl } from "./utils";
 
-export interface AutoloadOptions {
-  pattern?: string;
-  dir?: string;
-  prefix?: string;
-  schema?: ({
+type TSchemaHandler = ({
     path,
     url,
-  }: {
+}: {
     path: string;
     url: string;
-  }) => Parameters<InstanceType<typeof Elysia>["group"]>[1];
+}) => Parameters<InstanceType<typeof Elysia>["group"]>[1];
+
+export interface ITypesOptions {
+    output?: string;
+    typeName?: string;
+}
+
+export interface IAutoloadOptions {
+    pattern?: string;
+    dir?: string;
+    prefix?: string;
+    schema?: TSchemaHandler;
+    types?: ITypesOptions;
 }
 
 export async function autoload({
-  pattern,
-  dir,
-  prefix,
-  schema,
-}: AutoloadOptions = {}) {
-  const directoryPath = getPath(dir || "./routes");
+    pattern,
+    dir,
+    prefix,
+    schema,
+    types,
+}: IAutoloadOptions = {}) {
+    const directoryPath = getPath(dir || "./routes");
 
-  if (!existsSync(directoryPath))
-    throw new Error(`Directory ${directoryPath} doesn't exists`);
-  if (!statSync(directoryPath).isDirectory())
-    throw new Error(`${directoryPath} isn't a directory`);
+    if (!existsSync(directoryPath))
+        throw new Error(`Directory ${directoryPath} doesn't exists`);
+    if (!statSync(directoryPath).isDirectory())
+        throw new Error(`${directoryPath} isn't a directory`);
 
-  const app = new Elysia({
-    name: "elysia-autoload",
-    seed: {
-      pattern,
-      dir,
-      prefix,
-    },
-  });
+    const app = new Elysia({
+        name: "elysia-autoload",
+        seed: {
+            pattern,
+            dir,
+            prefix,
+            types,
+        },
+    });
 
-  const glob = new Bun.Glob(pattern || "**/*.{ts,js,mjs,cjs}");
+    const glob = new Bun.Glob(pattern || "**/*.{ts,js,mjs,cjs}");
 
-  const files = await Array.fromAsync(
-    glob.scan({
-      cwd: directoryPath,
-    }),
-  );
+    const files = await Array.fromAsync(
+        glob.scan({
+            cwd: directoryPath,
+        }),
+    );
 
-  for await (const path of sortByNestedParams(files)) {
-    const file = await import(join(directoryPath, path));
+    const paths: string[] = [];
 
-    if (!file.default) throw new Error(`${path} don't provide export default`);
-    const url = transformToUrl(path);
+    for await (const path of sortByNestedParams(files)) {
+        const fullPath = join(directoryPath, path);
 
-    const groupOptions = schema ? schema({ path, url }) : {};
-    // Типы свойства "body" несовместимы.
-    // Тип "string | TSchema | undefined" не может быть назначен для типа "TSchema | undefined".
-    // Тип "string" не может быть назначен для типа "TSchema".ts(2345)
-    // @ts-expect-error why....
-    app.group((prefix ?? "") + url, groupOptions, file.default);
-  }
+        const file = await import(join(directoryPath, path));
 
-  return app;
+        if (!file.default)
+            throw new Error(`${path} don't provide export default`);
+        const url = transformToUrl(path);
+
+        const groupOptions = schema ? schema({ path, url }) : {};
+        // Типы свойства "body" несовместимы.
+        // Тип "string | TSchema | undefined" не может быть назначен для типа "TSchema | undefined".
+        // Тип "string" не может быть назначен для типа "TSchema".ts(2345)
+        // @ts-expect-error why....
+        app.group((prefix ?? "") + url, groupOptions, file.default);
+
+        if (types) paths.push(fullPath.replace(directoryPath, ""));
+    }
+
+    if (types) {
+        const imports: string[] = paths.map(
+            (x, index) =>
+                `import Route${index} from "${
+                    directoryPath + x.replace(".ts", "")
+                }";`,
+        );
+
+        await Bun.write(
+            getPath(types.output || "./routes-types.ts"),
+            [
+                `import type { ElysiaWithBaseUrl } from "elysia-autoload";`,
+                imports.join("\n"),
+                "",
+                "declare global {",
+                `    type ${types.typeName || "AutoloadedRoutes"} = ${paths
+                    .map(
+                        (x, index) =>
+                            `ElysiaWithBaseUrl<"${
+                                transformToUrl(x) || "/"
+                            }", ReturnType<typeof Route${index}>>`,
+                    )
+                    .join("\n              & ")}`,
+                "}",
+            ].join("\n"),
+        );
+    }
+
+    return app;
 }
+
+export * from "./types";

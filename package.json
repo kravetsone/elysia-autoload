@@ -1,8 +1,10 @@
 {
     "name": "elysia-autoload",
-    "version": "0.0.3",
+    "version": "0.0.4",
     "author": "kravetsone",
-    "description": "Plugin for Elysia which autoload all routes in directory",
+    "main": "dist/index.js",
+    "description": "Plugin for Elysia which autoload all routes in directory and code-generate types for Eden",
+    "homepage": "https://github.com/kravetsone/elysia-autoload",
     "keywords": [
         "bun",
         "elysia",
@@ -12,23 +14,25 @@
         "filerouter",
         "autoroutes"
     ],
-    "main": "dist/index.js",
     "scripts": {
         "prepublishOnly": "tsc",
-        "lint": "eslint \"src/**/*.{ts,tsx,js,mjs,cjs}\"",
-        "lint:fix": "eslint \"src/**/*.{ts,tsx,js,mjs,cjs}\" --fix"
-    },
-    "devDependencies": {
-        "bun-types": "latest",
-        "eslint": "^8.41.0",
-        "eslint-kit": "^10.0.0",
-        "prettier": "^3.0.0"
-    },
-    "peerDependencies": {
-        "typescript": "^5.0.0",
-        "elysia": "^0.8.0"
+        "lint": "eslint \"{src,example}/**/*.{ts,tsx,js,mjs,cjs}\"",
+        "lint:fix": "eslint \"{src,example}/**/*.{ts,tsx,js,mjs,cjs}\" --fix"
     },
     "files": [
         "dist"
-    ]
+    ],
+    "devDependencies": {
+        "@elysiajs/eden": "^0.8.0",
+        "@elysiajs/swagger": "^0.8.0",
+        "bun-types": "latest",
+        "elysia": "^0.8.3",
+        "eslint": "^8.41.0",
+        "eslint-kit": "^10.0.0",
+        "prettier": "^3.0.0",
+        "typescript": "^5.0.0"
+    },
+    "peerDependencies": {
+        "elysia": "^0.8.0"
+    }
 }

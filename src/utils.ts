@@ -38,7 +38,7 @@ export function transformToUrl(path: string) {
         url = url.replace(regex, replacement as string);
     }
 
-    return "/" + url;
+    return url;
 }
 
 function getParamsCount(path: string) {
