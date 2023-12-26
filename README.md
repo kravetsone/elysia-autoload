@@ -1,6 +1,6 @@
 # elysia-autoload
 
-Plugin for [Elysia](https://elysiajs.com/) which autoload all routes in directory
+Plugin for [Elysia](https://elysiajs.com/) which autoload all routes in directory and code-generate types for Eden
 
 ## Installation
 
@@ -55,12 +55,61 @@ Guide how `elysia-autoload` match routes
 
 ## Options
 
-| Key      | Type     | Default                     | Description                                                         |
-| -------- | -------- | --------------------------- | ------------------------------------------------------------------- |
-| pattern? | string   | "\*\*_/\*_.{ts,js,mjs,cjs}" | [Glob patterns](<https://en.wikipedia.org/wiki/Glob_(programming)>) |
-| dir?     | string   | "./routes"                  | The folder where routes are located                                 |
-| prefix?  | string   |                             | Prefix for routes                                                   |
-| schema?  | Function |                             | Handler for providing routes guard schema                           |
+| Key      | Type                                    | Default                     | Description                                                         |
+| -------- | --------------------------------------- | --------------------------- | ------------------------------------------------------------------- |
+| pattern? | string                                  | "\*\*_/\*_.{ts,js,mjs,cjs}" | [Glob patterns](<https://en.wikipedia.org/wiki/Glob_(programming)>) |
+| dir?     | string                                  | "./routes"                  | The folder where routes are located                                 |
+| prefix?  | string                                  |                             | Prefix for routes                                                   |
+| types?   | true \| [Types Options](#types-options) |                             | Options to configure type code-generation.                          |
+| schema?  | Function                                |                             | Handler for providing routes guard schema                           |
+
+### Types Options
+
+| Key       | Type   | Default             | Description                                  |
+| --------- | ------ | ------------------- | -------------------------------------------- |
+| output?   | string | "./routes-types.ts" | Type code-generation output                  |
+| typeName? | string | "Routes"            | Name for code-generated global type for Eden |
+
+### Usage of types code-generation for eden
+
+```ts
+// app.ts
+import { Elysia } from "elysia";
+import { autoload } from "elysia-autoload";
+
+const app = new Elysia()
+    .use(
+        autoload({
+            types: {
+                output: "./routes.ts",
+                typeName: "Routes",
+            }, // or pass true for use default params
+        }),
+    )
+    .listen(3000);
+
+export type ElysiaApp = typeof app;
+```
+
+```ts
+// client.ts
+
+import { edenTreaty } from "@elysiajs/eden";
+
+// Routes are a global type so you don't need to import it.
+
+const app = edenTreaty<Routes>("http://localhost:3002");
+
+const { data } = await app.test["some-path-param"].get({
+    $query: {
+        key: 2,
+    },
+});
+
+console.log(data);
+```
+
+Example of app with types code-generation you can see in [example](https://github.com/kravetsone/elysia-autoload/tree/main/example)
 
 ### Usage of schema handler
 
