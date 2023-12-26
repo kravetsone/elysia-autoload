@@ -21,8 +21,11 @@ export interface IAutoloadOptions {
     dir?: string;
     prefix?: string;
     schema?: TSchemaHandler;
-    types?: ITypesOptions;
+    types?: ITypesOptions | true;
 }
+
+const TYPES_OUTPUT_DEFAULT = "./routes-types.ts";
+const TYPES_TYPENAME_DEFAULT = "Routes";
 
 export async function autoload({
     pattern,
@@ -86,13 +89,21 @@ export async function autoload({
         );
 
         await Bun.write(
-            getPath(types.output || "./routes-types.ts"),
+            getPath(
+                types === true || !types.output
+                    ? TYPES_OUTPUT_DEFAULT
+                    : types.output,
+            ),
             [
                 `import type { ElysiaWithBaseUrl } from "elysia-autoload";`,
                 imports.join("\n"),
                 "",
                 "declare global {",
-                `    type ${types.typeName || "AutoloadedRoutes"} = ${paths
+                `    type ${
+                    types === true || !types.typeName
+                        ? TYPES_TYPENAME_DEFAULT
+                        : types.typeName
+                } = ${paths
                     .map(
                         (x, index) =>
                             `ElysiaWithBaseUrl<"${
