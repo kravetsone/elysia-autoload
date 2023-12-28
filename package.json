@@ -12,7 +12,11 @@
         "autoload",
         "nextjs",
         "filerouter",
-        "autoroutes"
+        "autoroutes",
+        "eden",
+        "treaty",
+        "trpc",
+        "codegeneration"
     ],
     "scripts": {
         "prepublishOnly": "tsc",
