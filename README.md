@@ -55,13 +55,13 @@ Guide how `elysia-autoload` match routes
 
 ## Options
 
-| Key      | Type                                    | Default                     | Description                                                         |
-| -------- | --------------------------------------- | --------------------------- | ------------------------------------------------------------------- |
-| pattern? | string                                  | "\*\*_/\*_.{ts,js,mjs,cjs}" | [Glob patterns](<https://en.wikipedia.org/wiki/Glob_(programming)>) |
-| dir?     | string                                  | "./routes"                  | The folder where routes are located                                 |
-| prefix?  | string                                  |                             | Prefix for routes                                                   |
-| types?   | true \| [Types Options](#types-options) |                             | Options to configure type code-generation.                          |
-| schema?  | Function                                |                             | Handler for providing routes guard schema                           |
+| Key      | Type                                       | Default                     | Description                                                                         |
+| -------- | ------------------------------------------ | --------------------------- | ----------------------------------------------------------------------------------- |
+| pattern? | string                                     | "\*\*_/\*_.{ts,js,mjs,cjs}" | [Glob patterns](<https://en.wikipedia.org/wiki/Glob_(programming)>)                 |
+| dir?     | string                                     | "./routes"                  | The folder where routes are located                                                 |
+| prefix?  | string                                     |                             | Prefix for routes                                                                   |
+| types?   | boolean \| [Types Options](#types-options) | false                       | Options to configure type code-generation. if boolean - enables/disables generation |
+| schema?  | Function                                   |                             | Handler for providing routes guard schema                                           |
 
 ### Types Options
 
