@@ -14,6 +14,7 @@ type TSchemaHandler = ({
 export interface ITypesOptions {
     output?: string;
     typeName?: string;
+    useExport?: boolean;
 }
 
 export interface IAutoloadOptions {
@@ -98,8 +99,8 @@ export async function autoload({
                 `import type { ElysiaWithBaseUrl } from "elysia-autoload";`,
                 imports.join("\n"),
                 "",
-                "declare global {",
-                `    type ${
+                types === true || !types.useExport ? "declare global {" : "",
+                `    export type ${
                     types === true || !types.typeName
                         ? TYPES_TYPENAME_DEFAULT
                         : types.typeName
@@ -111,7 +112,7 @@ export async function autoload({
                             }", ReturnType<typeof Route${index}>>`,
                     )
                     .join("\n              & ")}`,
-                "}",
+                types === true || !types.useExport ? "}" : "",
             ].join("\n"),
         );
     }
