@@ -65,10 +65,11 @@ Guide how `elysia-autoload` match routes
 
 ### Types Options
 
-| Key       | Type   | Default             | Description                                                                             |
-| --------- | ------ | ------------------- | --------------------------------------------------------------------------------------- |
-| output?   | string | "./routes-types.ts" | Type code-generation output                                                             |
-| typeName? | string | "Routes"            | Name for code-generated global type for [Eden](https://elysiajs.com/eden/overview.html) |
+| Key        | Type    | Default             | Description                                                                             |
+| ---------- | ------- | ------------------- | --------------------------------------------------------------------------------------- |
+| output?    | string  | "./routes-types.ts" | Type code-generation output                                                             |
+| typeName?  | string  | "Routes"            | Name for code-generated global type for [Eden](https://elysiajs.com/eden/overview.html) |
+| useExport? | boolean | false               | Use export instead of global type                                                       |
 
 ### Usage of types code-generation for [Eden](https://elysiajs.com/eden/overview.html)
 
