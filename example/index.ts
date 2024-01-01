@@ -5,7 +5,7 @@ import { autoload } from "elysia-autoload";
 const app = new Elysia().use(swagger()).use(
     autoload({
         types: {
-            output: "./routes.ts",
+            output: "routes.ts",
             typeName: "Routes",
         },
     }),

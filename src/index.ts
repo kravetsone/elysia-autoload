@@ -12,7 +12,7 @@ type TSchemaHandler = ({
 }) => Parameters<InstanceType<typeof Elysia>["group"]>[1];
 
 export interface ITypesOptions {
-    output?: string;
+    output?: string | string[];
     typeName?: string;
     useExport?: boolean;
 }
@@ -89,32 +89,36 @@ export async function autoload({
                 }";`,
         );
 
-        await Bun.write(
-            getPath(
-                types === true || !types.output
-                    ? TYPES_OUTPUT_DEFAULT
-                    : types.output,
-            ),
-            [
-                `import type { ElysiaWithBaseUrl } from "elysia-autoload";`,
-                imports.join("\n"),
-                "",
-                types === true || !types.useExport ? "declare global {" : "",
-                `    export type ${
-                    types === true || !types.typeName
-                        ? TYPES_TYPENAME_DEFAULT
-                        : types.typeName
-                } = ${paths
-                    .map(
-                        (x, index) =>
-                            `ElysiaWithBaseUrl<"${
-                                transformToUrl(x) || "/"
-                            }", ReturnType<typeof Route${index}>>`,
-                    )
-                    .join("\n              & ")}`,
-                types === true || !types.useExport ? "}" : "",
-            ].join("\n"),
-        );
+        for await (const outputPath of types === true || !types.output
+            ? [TYPES_OUTPUT_DEFAULT]
+            : Array.isArray(types.output)
+              ? types.output
+              : [types.output]) {
+            await Bun.write(
+                getPath(outputPath),
+                [
+                    `import type { ElysiaWithBaseUrl } from "elysia-autoload";`,
+                    imports.join("\n"),
+                    "",
+                    types === true || !types.useExport
+                        ? "declare global {"
+                        : "",
+                    `    export type ${
+                        types === true || !types.typeName
+                            ? TYPES_TYPENAME_DEFAULT
+                            : types.typeName
+                    } = ${paths
+                        .map(
+                            (x, index) =>
+                                `ElysiaWithBaseUrl<"${
+                                    transformToUrl(x) || "/"
+                                }", ReturnType<typeof Route${index}>>`,
+                        )
+                        .join("\n              & ")}`,
+                    types === true || !types.useExport ? "}" : "",
+                ].join("\n"),
+            );
+        }
     }
 
     return app;
