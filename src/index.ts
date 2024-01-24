@@ -52,7 +52,7 @@ export async function autoload({
         },
     });
 
-    const glob = new Bun.Glob(pattern || "**/*.{ts,js,mjs,cjs}");
+    const glob = new Bun.Glob(pattern || "**/*.{ts,tsx,js,jsx,mjs,cjs}");
 
     const files = await Array.fromAsync(
         glob.scan({

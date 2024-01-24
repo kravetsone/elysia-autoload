@@ -1,6 +1,6 @@
 {
     "name": "elysia-autoload",
-    "version": "0.1.2",
+    "version": "0.1.3",
     "author": "kravetsone",
     "main": "dist/index.js",
     "description": "Plugin for Elysia which autoload all routes in directory and code-generate types for Eden",
@@ -27,14 +27,14 @@
         "dist"
     ],
     "devDependencies": {
-        "@elysiajs/eden": "^0.8.0",
-        "@elysiajs/swagger": "^0.8.0",
+        "@elysiajs/eden": "^0.8.1",
+        "@elysiajs/swagger": "^0.8.4",
         "bun-types": "latest",
-        "elysia": "^0.8.3",
-        "eslint": "^8.41.0",
-        "eslint-kit": "^10.0.0",
-        "prettier": "^3.0.0",
-        "typescript": "^5.0.0"
+        "elysia": "^0.8.10",
+        "eslint": "^8.56.0",
+        "eslint-kit": "^10.7.0",
+        "prettier": "^3.2.4",
+        "typescript": "^5.3.3"
     },
     "peerDependencies": {
         "elysia": "^0.8.0"
