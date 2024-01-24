@@ -21,7 +21,8 @@
     "scripts": {
         "prepublishOnly": "bun test && rm -rf dist && tsc",
         "lint": "bunx @biomejs/biome check src",
-        "lint:fix": "bun lint --apply"
+        "lint:fix": "bun lint --apply",
+        "prepare": "husky install"
     },
     "files": [
         "dist"
@@ -32,7 +33,8 @@
         "@elysiajs/swagger": "^0.8.4",
         "@types/bun": "^1.0.4",
         "elysia": "^0.8.10",
-        "typescript": "^5.3.3"
+        "typescript": "^5.3.3",
+        "husky": "^8.0.0"
     },
     "peerDependencies": {
         "elysia": "^0.8.0"
