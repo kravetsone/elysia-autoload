@@ -11,7 +11,7 @@ export function getPath(dir: string) {
 export function transformToUrl(path: string) {
     const replacements = [
         // Clean the url extensions
-        { regex: /\.(ts|js|mjs|cjs)$/u, replacement: "" },
+        { regex: /\.(ts|tsx|js|jsx|mjs|cjs)$/u, replacement: "" },
 
         // Handle wild card based routes - users/[...id]/profile.ts -> users/*/profile
         { regex: /\[\.\.\..*\]/gu, replacement: "*" },

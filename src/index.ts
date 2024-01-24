@@ -85,7 +85,7 @@ export async function autoload({
         const imports: string[] = paths.map(
             (x, index) =>
                 `import Route${index} from "${
-                    directoryPath + x.replace(".ts", "")
+                    directoryPath + x.replace(".ts", "").replace(".tsx", "")
                 }";`,
         );
 
