@@ -1,6 +1,6 @@
 {
     "name": "elysia-autoload",
-    "version": "0.1.4",
+    "version": "0.1.5",
     "author": "kravetsone",
     "main": "dist/index.js",
     "description": "Plugin for Elysia which autoload all routes in directory and code-generate types for Eden",
