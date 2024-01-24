@@ -4,6 +4,16 @@ Plugin for [Elysia](https://elysiajs.com/) which autoload all routes in director
 
 ## Installation
 
+### Start new project with [create-elysiajs](https://github.com/kravetsone/create-elysiajs)
+
+```bash
+bun create elysiajs <directory-name>
+```
+
+and select `Autoload` in plugins
+
+### Manual
+
 ```bash
 bun install elysia-autoload
 ```
@@ -42,7 +52,12 @@ Guide how `elysia-autoload` match routes
         ├── index.ts
         └── [id].ts // dynamic params
     ├── likes
-        ├── [...].ts
+        └── [...].ts // wildcard
+    ├── domains
+        ├── @[...] // wildcard with @ prefix
+            └──index.ts
+    ├── frontend
+        └──index.tsx // usage of tsx extension
     └── users.ts
 └── package.json
 ```
@@ -52,6 +67,8 @@ Guide how `elysia-autoload` match routes
 -   /routes/posts/[id].ts → /posts/:id
 -   /routes/users.ts → /users
 -   /routes/likes/[...].ts → /likes/\*
+-   /routes/domains/@[...]/index.ts → /domains/@\*
+-   /routes/frontend/index.tsx → /frontend
 
 ## Options
 
@@ -143,5 +160,3 @@ export type ElysiaApp = typeof app;
 
 app.listen(3001, console.log);
 ```
-
-### Thanks [https://github.com/wobsoriano/elysia-autoroutes](elysia-autoroutes) for some ideas
