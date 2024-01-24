@@ -1,42 +1,40 @@
 {
-    "name": "elysia-autoload",
-    "version": "0.1.4",
-    "author": "kravetsone",
-    "main": "dist/index.js",
-    "description": "Plugin for Elysia which autoload all routes in directory and code-generate types for Eden",
-    "homepage": "https://github.com/kravetsone/elysia-autoload",
-    "keywords": [
-        "bun",
-        "elysia",
-        "autoimports",
-        "autoload",
-        "nextjs",
-        "filerouter",
-        "autoroutes",
-        "eden",
-        "treaty",
-        "trpc",
-        "codegeneration"
-    ],
-    "scripts": {
-        "prepublishOnly": "tsc",
-        "lint": "eslint \"{src,example}/**/*.{ts,tsx,js,mjs,cjs}\"",
-        "lint:fix": "eslint \"{src,example}/**/*.{ts,tsx,js,mjs,cjs}\" --fix"
-    },
-    "files": [
-        "dist"
-    ],
-    "devDependencies": {
-        "@elysiajs/eden": "^0.8.1",
-        "@elysiajs/swagger": "^0.8.4",
-        "bun-types": "latest",
-        "elysia": "^0.8.10",
-        "eslint": "^8.56.0",
-        "eslint-kit": "^10.7.0",
-        "prettier": "^3.2.4",
-        "typescript": "^5.3.3"
-    },
-    "peerDependencies": {
-        "elysia": "^0.8.0"
-    }
+  "name": "elysia-autoload",
+  "version": "0.1.4",
+  "author": "kravetsone",
+  "main": "dist/index.js",
+  "description": "Plugin for Elysia which autoload all routes in directory and code-generate types for Eden",
+  "homepage": "https://github.com/kravetsone/elysia-autoload",
+  "keywords": [
+    "bun",
+    "elysia",
+    "autoimports",
+    "autoload",
+    "nextjs",
+    "filerouter",
+    "autoroutes",
+    "eden",
+    "treaty",
+    "trpc",
+    "codegeneration"
+  ],
+  "scripts": {
+    "prepublishOnly": "tsc",
+    "lint": "eslint \"{src,example}/**/*.{ts,tsx,js,mjs,cjs}\"",
+    "lint:fix": "eslint \"{src,example}/**/*.{ts,tsx,js,mjs,cjs}\" --fix"
+  },
+  "files": [
+    "dist"
+  ],
+  "devDependencies": {
+    "@biomejs/biome": "1.5.3",
+    "@elysiajs/eden": "^0.8.1",
+    "@elysiajs/swagger": "^0.8.4",
+    "@types/bun": "^1.0.4",
+    "elysia": "^0.8.10",
+    "typescript": "^5.3.3"
+  },
+  "peerDependencies": {
+    "elysia": "^0.8.0"
+  }
 }
