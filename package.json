@@ -1,42 +1,42 @@
 {
-    "name": "elysia-autoload",
-    "version": "0.1.5",
-    "author": "kravetsone",
-    "main": "dist/index.js",
-    "description": "Plugin for Elysia which autoload all routes in directory and code-generate types for Eden",
-    "homepage": "https://github.com/kravetsone/elysia-autoload",
-    "keywords": [
-        "bun",
-        "elysia",
-        "autoimports",
-        "autoload",
-        "nextjs",
-        "filerouter",
-        "autoroutes",
-        "eden",
-        "treaty",
-        "trpc",
-        "codegeneration"
-    ],
-    "scripts": {
-        "prepublishOnly": "bun test && rm -rf dist && tsc",
-        "lint": "bunx @biomejs/biome check src",
-        "lint:fix": "bun lint --apply",
-        "prepare": "husky install"
-    },
-    "files": [
-        "dist"
-    ],
-    "devDependencies": {
-        "@biomejs/biome": "1.5.3",
-        "@elysiajs/eden": "^0.8.1",
-        "@elysiajs/swagger": "^0.8.4",
-        "@types/bun": "^1.0.4",
-        "elysia": "^0.8.10",
-        "typescript": "^5.3.3",
-        "husky": "^8.0.0"
-    },
-    "peerDependencies": {
-        "elysia": "^0.8.0"
-    }
+  "name": "elysia-autoload",
+  "version": "0.1.5",
+  "author": "kravetsone",
+  "main": "dist/index.js",
+  "description": "Plugin for Elysia which autoload all routes in directory and code-generate types for Eden",
+  "homepage": "https://github.com/kravetsone/elysia-autoload",
+  "keywords": [
+    "bun",
+    "elysia",
+    "autoimports",
+    "autoload",
+    "nextjs",
+    "filerouter",
+    "autoroutes",
+    "eden",
+    "treaty",
+    "trpc",
+    "codegeneration"
+  ],
+  "scripts": {
+    "prepublishOnly": "bun test && rm -rf dist && tsc",
+    "lint": "bunx @biomejs/biome check src",
+    "lint:fix": "bun lint --apply",
+    "prepare": "husky"
+  },
+  "files": [
+    "dist"
+  ],
+  "devDependencies": {
+    "@biomejs/biome": "1.5.3",
+    "@elysiajs/eden": "^0.8.1",
+    "@elysiajs/swagger": "^0.8.5",
+    "@types/bun": "^1.0.4",
+    "elysia": "^0.8.10",
+    "typescript": "^5.3.3",
+    "husky": "^9.0.6"
+  },
+  "peerDependencies": {
+    "elysia": "^0.8.0"
+  }
 }
