@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { transformToUrl } from "../src/utils";
+import { sortByNestedParams, transformToUrl } from "../src/utils";
 
 describe("Path to URL", () => {
 	test("/index.ts → /", () => {
@@ -22,5 +22,29 @@ describe("Path to URL", () => {
 	});
 	test("/frontend/index.tsx → /frontend", () => {
 		expect(transformToUrl("/frontend/index.tsx")).toBe("/frontend");
+	});
+});
+
+describe("sortByNestedParams", () => {
+	test("Place routes with params to the end of array", () => {
+		expect(
+			sortByNestedParams([
+				"/index.ts",
+				"/likes/test.ts",
+				"/domains/[test]/some.ts",
+				"/domains/[test]/[some].ts",
+				"/likes/[...].ts",
+				"/posts/some.ts",
+				"/posts/[id].ts",
+			]),
+		).toEqual([
+			"/index.ts",
+			"/likes/test.ts",
+			"/posts/some.ts",
+			"/domains/[test]/some.ts",
+			"/likes/[...].ts",
+			"/posts/[id].ts",
+			"/domains/[test]/[some].ts",
+		]);
 	});
 });
