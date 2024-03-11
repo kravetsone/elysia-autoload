@@ -40,7 +40,7 @@ export function transformToUrl(path: string) {
 		url = url.replace(regex, replacement as string);
 	}
 
-	return url.length ? url : "";
+	return url;
 }
 
 function getParamsCount(path: string) {

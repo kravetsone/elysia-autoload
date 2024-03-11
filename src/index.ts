@@ -44,6 +44,7 @@ export async function autoload({
 
 	const app = new Elysia({
 		name: "elysia-autoload",
+		prefix: prefix?.endsWith("/") ? prefix.slice(0, -1) : prefix,
 		seed: {
 			pattern,
 			dir,
@@ -74,8 +75,13 @@ export async function autoload({
 		// Типы свойства "body" несовместимы.
 		// Тип "string | TSchema | undefined" не может быть назначен для типа "TSchema | undefined".
 		// Тип "string" не может быть назначен для типа "TSchema".ts(2345)
-		// @ts-expect-error why....
-		app.group((prefix ?? "") + url, groupOptions, file.default);
+
+		app.group(
+			url,
+			// @ts-expect-error why....
+			groupOptions,
+			file.default,
+		);
 
 		if (types) paths.push(fullPath.replace(directoryPath, ""));
 	}
