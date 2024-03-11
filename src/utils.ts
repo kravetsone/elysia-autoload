@@ -12,6 +12,8 @@ export function transformToUrl(path: string) {
 	const replacements = [
 		// Clean the url extensions
 		{ regex: /\.(ts|tsx|js|jsx|mjs|cjs)$/u, replacement: "" },
+		// Fix windows slashes
+		{ regex: /\\/gu, replacement: "/" },
 
 		// Handle wild card based routes - users/[...id]/profile.ts -> users/*/profile
 		{ regex: /\[\.\.\..*\]/gu, replacement: "*" },
@@ -37,7 +39,7 @@ export function transformToUrl(path: string) {
 	for (const { regex, replacement } of replacements) {
 		url = url.replace(regex, replacement as string);
 	}
-
+	console.log(url);
 	return url.length ? url : "/";
 }
 
