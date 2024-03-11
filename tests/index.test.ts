@@ -2,8 +2,8 @@ import { describe, expect, test } from "bun:test";
 import { sortByNestedParams, transformToUrl } from "../src/utils";
 
 describe("Path to URL", () => {
-	test("/index.ts → /", () => {
-		expect(transformToUrl("/index.ts")).toBe("/");
+	test("/index.ts → ", () => {
+		expect(transformToUrl("/index.ts")).toBe("");
 	});
 	test("/posts/index.ts → /posts", () => {
 		expect(transformToUrl("/posts/index.ts")).toBe("/posts");
