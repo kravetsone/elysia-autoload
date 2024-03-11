@@ -1,6 +1,6 @@
 import type { ElysiaWithBaseUrl } from "elysia-autoload";
-import Route0 from "/root/elysia-autoload/example/routes/index";
-import Route1 from "/root/elysia-autoload/example/routes/test/[some]/index";
+import type Route0 from "Z:/PROJECTS/node-ts/elysia-autoload/example/routes/index";
+import type Route1 from "Z:/PROJECTS/node-ts/elysia-autoload/example/routes/test/[some]/index";
 
 declare global {
     export type Routes = ElysiaWithBaseUrl<"/", ReturnType<typeof Route0>>
