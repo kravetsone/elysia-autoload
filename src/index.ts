@@ -83,9 +83,9 @@ export async function autoload({
 	if (types) {
 		const imports: string[] = paths.map(
 			(x, index) =>
-				`import Route${index} from "${
+				`import type Route${index} from "${(
 					directoryPath + x.replace(".ts", "").replace(".tsx", "")
-				}";`,
+				).replace(/\\/gu, "/")}";`,
 		);
 
 		for await (const outputPath of types === true || !types.output
