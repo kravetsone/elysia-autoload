@@ -1,5 +1,35 @@
 import { describe, expect, test } from "bun:test";
+import { edenFetch } from "@elysiajs/eden";
+import { Elysia } from "elysia";
+import { autoload } from "../src/index";
 import { sortByNestedParams, transformToUrl } from "../src/utils";
+
+const app_with_prefix = new Elysia({
+	prefix: "/api",
+}).use(
+	autoload({
+		pattern: "**/*.{ts,js}",
+		dir: "./routes",
+		types: {
+			output: "./types/routes.ts",
+		},
+	}),
+);
+
+const app_with_plugin_prefix = new Elysia().use(
+	autoload({
+		prefix: "/api",
+		pattern: "**/*.{ts,js}",
+		dir: "./routes",
+		types: {
+			output: "./types/routes.ts",
+		},
+	}),
+);
+
+const fetcher = edenFetch<Routes>("http://127.0.0.1:5173");
+
+export type ElysiaApp = typeof app_with_prefix;
 
 describe("Path to URL", () => {
 	test("/index.ts → ", () => {
@@ -47,4 +77,31 @@ describe("sortByNestedParams", () => {
 			"/domains/[test]/[some].ts",
 		]);
 	});
+
+	test("Verify Intellisense", () => {
+		// const request = fetcher("", {});
+	});
 });
+
+// describe("Autoload Plugin", () => {
+// 	test("Prefix works when added as a parameter to the plugin", async () => {
+// 		// autoload plugin is lazy-load
+// 		app_with_plugin_prefix.listen(7754, () => {
+// 			// Extract the route paths from the routes array
+// 			const routePaths = app_with_plugin_prefix.routes.map(
+// 				(route) => route.path,
+// 			);
+
+// 			expect(routePaths).toContain("/api/");
+// 			expect(routePaths).toContain("/api/users/:id/");
+// 		});
+// 	});
+
+// 	test("Prefix works when added to Elysia()", async () => {
+// 		// Extract the route paths from the routes array
+// 		const routePaths = app_with_prefix.routes.map((route) => route.path);
+
+// 		expect(routePaths).toContain("/api/");
+// 		expect(routePaths).toContain("/api/users/:id/");
+// 	});
+// });

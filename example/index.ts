@@ -1,18 +1,22 @@
 import { swagger } from "@elysiajs/swagger";
 import { Elysia } from "elysia";
-import { autoload } from "elysia-autoload";
+import { autoload } from "../src";
 
 const prefix = "/api/" as const;
 
-const app = new Elysia().use(swagger()).use(
-	autoload({
-		prefix,
-		types: {
-			output: "routes.ts",
-			typeName: "Routes",
-		},
-	}),
-);
+const app = new Elysia({
+	prefix: "/some",
+})
+	.use(swagger())
+	.use(
+		autoload({
+			prefix,
+			types: {
+				output: "routes.ts",
+				typeName: "Routes",
+			},
+		}),
+	);
 
 app.listen(3002, () => console.log("started"));
 
