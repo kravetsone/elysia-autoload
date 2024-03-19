@@ -4,17 +4,17 @@ import { autoload } from "../src";
 
 const prefix = "/api/" as const;
 
-const app = new Elysia({
-	prefix: "/some",
+export const app = new Elysia({
+	prefix: "/test",
 })
 	.use(swagger())
 	.use(
 		autoload({
 			prefix,
-			types: {
-				output: "routes.ts",
-				typeName: "Routes",
-			},
+			// types: {
+			// 	output: "routes.ts",
+			// 	typeName: "Routes",
+			// },
 		}),
 	);
 

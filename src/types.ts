@@ -9,23 +9,26 @@ type RoutesWithPrefix<Routes extends RouteBase, Prefix extends string> = {
 
 export type ElysiaWithBaseUrl<
 	BaseUrl extends string,
-	ElysiaType,
+	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	ElysiaType extends Elysia<any, any, any, any, any, any, any, any>,
 > = ElysiaType extends Elysia<
 	infer BasePath,
-	infer Decorators,
+	infer Scoped,
+	infer Singleton,
 	infer Definitions,
-	infer ParentSchema,
-	infer Macro,
+	infer Metadata,
 	infer Routes,
-	infer Scoped
+	infer Ephemeral,
+	infer Volatile
 >
 	? Elysia<
 			BasePath,
-			Decorators,
+			Scoped,
+			Singleton,
 			Definitions,
-			ParentSchema,
-			Macro,
+			Metadata,
 			RoutesWithPrefix<Routes, BaseUrl>,
-			Scoped
+			Ephemeral,
+			Volatile
 	  >
 	: never;

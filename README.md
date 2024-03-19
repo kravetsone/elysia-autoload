@@ -2,6 +2,8 @@
 
 Plugin for [Elysia](https://elysiajs.com/) which autoload all routes in directory and code-generate types for [Eden](https://elysiajs.com/eden/overview.html)
 
+**Currently, Eden types generation is broken!!**
+
 ## Installation
 
 ### Start new project with [create-elysiajs](https://github.com/kravetsone/create-elysiajs)
@@ -102,7 +104,7 @@ const app = new Elysia()
                 output: "./routes.ts",
                 typeName: "Routes",
             }, // or pass true for use default params
-        }),
+        })
     )
     .listen(3000);
 
@@ -152,7 +154,7 @@ const app = new Elysia()
                     },
                 };
             },
-        }),
+        })
     )
     .use(swagger());
 
