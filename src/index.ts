@@ -1,6 +1,13 @@
 import { existsSync, statSync } from "node:fs";
 import { join } from "node:path";
-import { Elysia } from "elysia";
+import {
+	Elysia,
+	type InputSchema,
+	type LocalHook,
+	type RouteSchema,
+	type SingletonBase,
+} from "elysia";
+import type { BaseMacro } from "elysia/dist/types";
 import {
 	fixSlashes,
 	getPath,
@@ -14,7 +21,16 @@ type TSchemaHandler = ({
 }: {
 	path: string;
 	url: string;
-}) => Parameters<InstanceType<typeof Elysia>["group"]>[1];
+}) => LocalHook<
+	InputSchema,
+	RouteSchema,
+	SingletonBase,
+	Record<string, Error>,
+	BaseMacro,
+	""
+>;
+
+const a = {} as ReturnType<TSchemaHandler>;
 
 export interface ITypesOptions {
 	output?: string | string[];
