@@ -29,15 +29,15 @@
         "dist"
     ],
     "devDependencies": {
-        "@biomejs/biome": "1.6.0",
-        "@elysiajs/eden": "^0.8.1",
-        "@elysiajs/swagger": "^0.8.5",
+        "@biomejs/biome": "1.6.1",
+        "@elysiajs/eden": "^1.0.4",
+        "@elysiajs/swagger": "^1.0.2",
         "@types/bun": "^1.0.8",
-        "elysia": "^0.8.17",
+        "elysia": "^1.0.5",
         "typescript": "^5.4.2",
         "husky": "^9.0.11"
     },
     "peerDependencies": {
-        "elysia": "^0.8.0"
+        "elysia": "^1.0.0"
     }
 }
