@@ -9,7 +9,7 @@ type RoutesWithPrefix<Routes extends RouteBase, Prefix extends string> = {
 
 export type ElysiaWithBaseUrl<
 	BaseUrl extends string,
-	ElysiaType extends Elysia,
+	ElysiaType,
 > = ElysiaType extends Elysia<
 	infer BasePath,
 	infer Decorators,

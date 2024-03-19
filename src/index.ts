@@ -1,7 +1,12 @@
 import { existsSync, statSync } from "node:fs";
 import { join } from "node:path";
-import Elysia from "elysia";
-import { getPath, sortByNestedParams, transformToUrl } from "./utils";
+import { Elysia } from "elysia";
+import {
+	fixSlashes,
+	getPath,
+	sortByNestedParams,
+	transformToUrl,
+} from "./utils";
 
 type TSchemaHandler = ({
 	path,
@@ -27,9 +32,9 @@ export interface IAutoloadOptions {
 
 const TYPES_OUTPUT_DEFAULT = "./routes-types.ts";
 const TYPES_TYPENAME_DEFAULT = "Routes";
-export const autoload = (options: IAutoloadOptions = {}) => {
+
+export function autoload(options: IAutoloadOptions = {}) {
 	return async (app: InstanceType<typeof Elysia>) => {
-		const parentPrefix = app?.config?.prefix;
 		const { pattern, dir, prefix, schema, types } = options;
 
 		const directoryPath = getPath(dir || "./routes");
@@ -41,7 +46,7 @@ export const autoload = (options: IAutoloadOptions = {}) => {
 
 		const plugin = new Elysia({
 			name: "elysia-autoload",
-			prefix: prefix?.endsWith("/") ? prefix.slice(0, -1) : prefix,
+			prefix: fixSlashes(prefix),
 			seed: {
 				pattern,
 				dir,
@@ -63,10 +68,10 @@ export const autoload = (options: IAutoloadOptions = {}) => {
 		for await (const path of sortByNestedParams(files)) {
 			const fullPath = join(directoryPath, path);
 
-			const file = await import(join(directoryPath, path));
+			const file = await import(fullPath);
 
 			if (!file.default)
-				throw new Error(`${path} don't provide export default`);
+				throw new Error(`${path} doesn't provide default export`);
 			const url = transformToUrl(path);
 
 			const groupOptions = schema ? schema({ path, url }) : {};
@@ -85,7 +90,6 @@ export const autoload = (options: IAutoloadOptions = {}) => {
 		}
 
 		if (types) {
-			const typesPrefix = prefix ?? parentPrefix;
 			const imports: string[] = paths.map(
 				(x, index) =>
 					`import type Route${index} from "${(
@@ -113,9 +117,8 @@ export const autoload = (options: IAutoloadOptions = {}) => {
 							.map(
 								(x, index) =>
 									`ElysiaWithBaseUrl<"${
-										((typesPrefix?.endsWith("/")
-											? typesPrefix.slice(0, -1)
-											: typesPrefix) ?? "") + transformToUrl(x) || "/"
+										((prefix?.endsWith("/") ? prefix.slice(0, -1) : prefix) ??
+											"") + transformToUrl(x) || "/"
 									}", ReturnType<typeof Route${index}>>`,
 							)
 							.join("\n              & ")}`,
@@ -127,5 +130,5 @@ export const autoload = (options: IAutoloadOptions = {}) => {
 
 		return plugin;
 	};
-};
+}
 export * from "./types";
