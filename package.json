@@ -1,9 +1,15 @@
 {
     "name": "elysia-autoload",
-    "version": "0.1.9",
+    "version": "0.2.0",
     "author": "kravetsone",
-    "type": "commonjs",
-    "main": "dist/index.js",
+    "type": "module",
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "main": "./dist/index.js",
+            "module": "./dist/index.mjs"
+        }
+    },
     "description": "Plugin for Elysia which autoload all routes in directory and code-generate types for Eden",
     "homepage": "https://github.com/kravetsone/elysia-autoload",
     "keywords": [
@@ -20,7 +26,7 @@
         "codegeneration"
     ],
     "scripts": {
-        "prepublishOnly": "bun test && rm -rf dist && tsc",
+        "prepublishOnly": "bun test && bunx tsup && rm -f ./dist/index.d.mts",
         "lint": "bunx @biomejs/biome check src",
         "lint:fix": "bun lint --apply",
         "prepare": "husky"
@@ -29,13 +35,15 @@
         "dist"
     ],
     "devDependencies": {
-        "@biomejs/biome": "1.6.1",
-        "@elysiajs/eden": "^1.0.4",
-        "@elysiajs/swagger": "^1.0.2",
-        "@types/bun": "^1.0.8",
-        "elysia": "^1.0.5",
-        "typescript": "^5.4.2",
-        "husky": "^9.0.11"
+        "@biomejs/biome": "1.6.3",
+        "@elysiajs/eden": "^1.0.7",
+        "@elysiajs/swagger": "^1.0.3",
+        "@microsoft/api-extractor": "^7.43.0",
+        "@types/bun": "^1.0.11",
+        "elysia": "^1.0.9",
+        "husky": "^9.0.11",
+        "tsup": "^8.0.2",
+        "typescript": "^5.4.3"
     },
     "peerDependencies": {
         "elysia": "^1.0.0"

@@ -30,8 +30,6 @@ type TSchemaHandler = ({
 	""
 >;
 
-const a = {} as ReturnType<TSchemaHandler>;
-
 export interface ITypesOptions {
 	output?: string | string[];
 	typeName?: string;
@@ -91,6 +89,8 @@ export function autoload(options: IAutoloadOptions = {}) {
 			const url = transformToUrl(path);
 
 			const groupOptions = schema ? schema({ path, url }) : {};
+			// TODO: fix later
+			// @ts-expect-error
 			plugin.group(url, groupOptions, file.default);
 
 			if (types) paths.push(fullPath.replace(directoryPath, ""));
