@@ -4,8 +4,8 @@
     "author": "kravetsone",
     "type": "module",
     "types": "./dist/index.d.ts",
-    "main": "./dist/index.js",
-    "module": "./dist/index.mjs",
+    "main": "./dist/index.cjs",
+    "module": "./dist/index.js",
     "description": "Plugin for Elysia which autoload all routes in directory and code-generate types for Eden",
     "homepage": "https://github.com/kravetsone/elysia-autoload",
     "keywords": [
@@ -22,10 +22,10 @@
         "codegeneration"
     ],
     "scripts": {
-        "prepublishOnly": "bun test && bunx tsup && rm -f ./dist/index.d.mts",
+        "prepublishOnly": "bun test && bunx tsup && rm -f ./dist/index.d.сts",
         "lint": "bunx @biomejs/biome check src",
         "lint:fix": "bun lint --apply",
-        "prepare": "husky"
+        "prepare": "bunx husky"
     },
     "files": [
         "dist"
