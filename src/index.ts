@@ -107,8 +107,8 @@ export function autoload(options: IAutoloadOptions = {}) {
 			for await (const outputPath of types === true || !types.output
 				? [TYPES_OUTPUT_DEFAULT]
 				: Array.isArray(types.output)
-				  ? types.output
-				  : [types.output]) {
+					? types.output
+					: [types.output]) {
 				await Bun.write(
 					getPath(outputPath),
 					[

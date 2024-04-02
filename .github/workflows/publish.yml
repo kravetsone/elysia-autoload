@@ -32,6 +32,12 @@ jobs:
                   registry-url: "https://registry.npmjs.org"
                   scope: "@gramio"
 
+            - name: Build package
+              run: bun run prepublishOnly
+
+            - name: Run publint
+              run: bunx publint
+
             - name: Publish package
               run: npm publish --access public
               env:

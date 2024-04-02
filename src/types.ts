@@ -30,5 +30,5 @@ export type ElysiaWithBaseUrl<
 			RoutesWithPrefix<Routes, BaseUrl>,
 			Ephemeral,
 			Volatile
-	  >
+		>
 	: never;
