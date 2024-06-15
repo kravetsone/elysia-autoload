@@ -1,10 +1,11 @@
-import { isAbsolute, join } from "node:path";
+import path from "node:path";
 
 export function getPath(dir: string) {
-	if (isAbsolute(dir)) return dir;
-	if (isAbsolute(process.argv[1])) return join(process.argv[1], "..", dir);
+	if (path.isAbsolute(dir)) return dir;
+	if (path.isAbsolute(process.argv[1]))
+		return path.join(process.argv[1], "..", dir);
 
-	return join(process.cwd(), process.argv[1], "..", dir);
+	return path.join(process.cwd(), process.argv[1], "..", dir);
 }
 
 // Inspired by https://github.com/wobsoriano/elysia-autoroutes/blob/main/src/utils/transformPathToUrl.ts#L4C31-L4C31

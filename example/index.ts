@@ -1,6 +1,6 @@
 import { swagger } from "@elysiajs/swagger";
 import { Elysia } from "elysia";
-import { autoload } from "../src";
+import { autoload } from "elysia-autoload";
 
 const prefix = "/api/" as const;
 

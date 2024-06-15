@@ -1,6 +1,6 @@
 # elysia-autoload
 
-Plugin for [Elysia](https://elysiajs.com/) which autoload all routes in directory and code-generate types for [Eden](https://elysiajs.com/eden/overview.html)
+Plugin for [Elysia](https://elysiajs.com/) which autoload all routes in directory and code-generate types for [Eden](https://elysiajs.com/eden/overview.html) with [`Bun.build`](https://bun.sh/docs/bundler) support!
 
 **Currently, Eden types generation is broken!!**
 
@@ -130,6 +130,25 @@ console.log(data);
 ```
 
 Example of app with types code-generation you can see in [example](https://github.com/kravetsone/elysia-autoload/tree/main/example)
+
+### Bun build usage
+
+You can use this plugin with `Bun.build`, thanks to [esbuild-plugin-autoload](https://github.com/kravetsone/esbuild-plugin-autoload)!
+
+```ts
+// @filename: build.ts
+import { autoload } from "esbuild-plugin-autoload"; // default import also supported
+
+await Bun.build({
+    entrypoints: ["src/index.ts"],
+    outdir: "out",
+    plugins: [autoload()],
+}).then(console.log);
+```
+
+Then, build it with `bun build.ts` and run with `bun out/index.ts`.
+
+[Read more](https://github.com/kravetsone/esbuild-plugin-autoload)
 
 ### Usage of schema handler
 

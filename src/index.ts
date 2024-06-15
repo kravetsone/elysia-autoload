@@ -1,5 +1,5 @@
-import { existsSync, statSync } from "node:fs";
-import { join } from "node:path";
+import fs from "node:fs";
+import path from "node:path";
 import {
 	Elysia,
 	type InputSchema,
@@ -48,13 +48,15 @@ const TYPES_OUTPUT_DEFAULT = "./routes-types.ts";
 const TYPES_TYPENAME_DEFAULT = "Routes";
 
 export async function autoload(options: IAutoloadOptions = {}) {
+	// autoload-plugin-sources 
+	const fileSources = {};
+	
 	const { pattern, dir, prefix, schema, types } = options;
-
 	const directoryPath = getPath(dir || "./routes");
 
-	if (!existsSync(directoryPath))
+	if (!fs.existsSync(directoryPath))
 		throw new Error(`Directory ${directoryPath} doesn't exists`);
-	if (!statSync(directoryPath).isDirectory())
+	if (!fs.statSync(directoryPath).isDirectory())
 		throw new Error(`${directoryPath} isn't a directory`);
 
 	const plugin = new Elysia({
@@ -78,16 +80,16 @@ export async function autoload(options: IAutoloadOptions = {}) {
 
 	const paths: string[] = [];
 
-	for await (const path of sortByNestedParams(files)) {
-		const fullPath = join(directoryPath, path);
+	for await (const filePath of sortByNestedParams(files)) {
+		const fullPath = path.join(directoryPath, filePath);
 
 		const file = await import(fullPath);
 
 		if (!file.default)
-			throw new Error(`${path} doesn't provide default export`);
-		const url = transformToUrl(path);
+			throw new Error(`${filePath} doesn't provide default export`);
+		const url = transformToUrl(filePath);
 
-		const groupOptions = schema ? schema({ path, url }) : {};
+		const groupOptions = schema ? schema({ path: filePath, url }) : {};
 		// TODO: fix later
 		// @ts-expect-error
 		plugin.group(url, groupOptions, file.default);
