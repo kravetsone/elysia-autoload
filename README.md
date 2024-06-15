@@ -28,10 +28,14 @@ bun install elysia-autoload
 import { Elysia } from "elysia";
 import { autoload } from "elysia-autoload";
 
-const app = new Elysia().use(autoload()).listen(3000);
+const app = new Elysia().use(await autoload()).listen(3000);
 
 export type ElysiaApp = typeof app;
 ```
+
+> [!IMPORTANT]
+> We strictly recommend use `await` when registering plugin
+> Read more about [Lazy-load plugins](https://elysiajs.com/patterns/lazy-loading-module.html)
 
 ## Create route
 
@@ -99,7 +103,7 @@ import { autoload } from "elysia-autoload";
 
 const app = new Elysia()
     .use(
-        autoload({
+        await autoload({
             types: {
                 output: "./routes.ts",
                 typeName: "Routes",
@@ -159,7 +163,7 @@ import { autoload } from "elysia-autoload";
 
 const app = new Elysia()
     .use(
-        autoload({
+        await autoload({
             schema: ({ path, url }) => {
                 const tag = url.split("/").at(1)!;
 

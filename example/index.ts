@@ -9,7 +9,7 @@ export const app = new Elysia({
 })
 	.use(swagger())
 	.use(
-		autoload({
+		await autoload({
 			prefix,
 			// types: {
 			// 	output: "routes.ts",
