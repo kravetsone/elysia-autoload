@@ -101,7 +101,7 @@ export async function autoload(options: IAutoloadOptions = {}) {
 		const imports: string[] = paths.map(
 			(x, index) =>
 				`import type Route${index} from "${(
-					directoryPath + x.replace(".ts", "").replace(".tsx", "")
+					dir + x.replace(".ts", "").replace(".tsx", "")
 				).replace(/\\/gu, "/")}";`,
 		);
 
