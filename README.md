@@ -163,6 +163,7 @@ import { autoload } from "esbuild-plugin-autoload"; // default import also suppo
 
 await Bun.build({
     entrypoints: ["src/index.ts"],
+    target: "bun",
     outdir: "out",
     plugins: [autoload()],
 }).then(console.log);
@@ -179,6 +180,7 @@ import { autoload } from "esbuild-plugin-autoload"; // default import also suppo
 
 await Bun.build({
     entrypoints: ["src/index.ts"],
+    target: "bun",
     outdir: "out",
     plugins: [autoload()],
 }).then(console.log);
