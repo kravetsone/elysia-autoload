@@ -11,10 +11,10 @@ export const app = new Elysia({
 	.use(
 		await autoload({
 			prefix,
-			// types: {
-			// 	output: "routes.ts",
-			// 	typeName: "Routes",
-			// },
+			types: {
+				output: "routes.ts",
+				typeName: "Routes",
+			},
 		}),
 	);
 
