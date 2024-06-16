@@ -35,6 +35,7 @@ export type ElysiaApp = typeof app;
 
 > [!IMPORTANT]
 > We strictly recommend use `await` when registering plugin
+>
 > Read more about [Lazy-load plugins](https://elysiajs.com/patterns/lazy-loading-module.html)
 
 ## Create route
