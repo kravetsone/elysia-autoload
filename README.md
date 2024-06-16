@@ -1,6 +1,6 @@
 # elysia-autoload
 
-Plugin for [Elysia](https://elysiajs.com/) which autoload all routes in directory and code-generate types for [Eden](https://elysiajs.com/eden/overview.html) with [`Bun.build`](https://bun.sh/docs/bundler) support!
+Plugin for [Elysia](https://elysiajs.com/) which autoload all routes in directory and code-generate types for [Eden](https://elysiajs.com/eden/overview.html) with [`Bun.build`](#bun-build-usage) support!
 
 **Currently, Eden types generation is broken!!**
 
@@ -153,9 +153,9 @@ Example of app with types code-generation you can see in [example](https://githu
 
 **Currently, Eden types generation is broken!!**
 
-### Bun build usage
+### [Bun build](https://bun.sh/docs/bundler) usage
 
-You can use this plugin with `Bun.build`, thanks to [esbuild-plugin-autoload](https://github.com/kravetsone/esbuild-plugin-autoload)!
+You can use this plugin with [`Bun.build`](https://bun.sh/docs/bundler), thanks to [esbuild-plugin-autoload](https://github.com/kravetsone/esbuild-plugin-autoload)!
 
 ```ts
 // @filename: build.ts
@@ -169,6 +169,25 @@ await Bun.build({
 ```
 
 Then, build it with `bun build.ts` and run with `bun out/index.ts`.
+
+### [Bun compile](https://bun.sh/docs/bundler/executables) usage
+
+You can bundle and then compile it into a [single executable binary file](https://bun.sh/docs/bundler/executables)
+
+```ts
+import { autoload } from "esbuild-plugin-autoload"; // default import also supported
+
+await Bun.build({
+    entrypoints: ["src/index.ts"],
+    outdir: "out",
+    plugins: [autoload()],
+}).then(console.log);
+
+await Bun.$`bun build --compile out/index.js`;
+```
+
+> [!WARNING]
+> You cannot use it in `bun build --compile` mode without extra step ([Feature issue](https://github.com/oven-sh/bun/issues/11895))
 
 [Read more](https://github.com/kravetsone/esbuild-plugin-autoload)
 

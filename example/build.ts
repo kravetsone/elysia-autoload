@@ -9,3 +9,5 @@ await Bun.build({
 		}),
 	],
 }).then(console.log);
+
+await Bun.$`bun build --compile out/index.js`;
