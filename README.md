@@ -134,7 +134,24 @@ const { data } = await app.test["some-path-param"].get({
 console.log(data);
 ```
 
+`routes.ts` will be:
+
+```ts
+// @filename: routes.ts
+
+import type { ElysiaWithBaseUrl } from "elysia-autoload";
+import type Route0 from "./routes/index";
+import type Route1 from "./routes/test/[some]/index";
+
+declare global {
+    export type Routes = ElysiaWithBaseUrl<"/api", ReturnType<typeof Route0>> &
+        ElysiaWithBaseUrl<"/api/test/:some", ReturnType<typeof Route1>>;
+}
+```
+
 Example of app with types code-generation you can see in [example](https://github.com/kravetsone/elysia-autoload/tree/main/example)
+
+**Currently, Eden types generation is broken!!**
 
 ### Bun build usage
 
