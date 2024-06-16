@@ -5,7 +5,7 @@ import { autoload } from "../src/index";
 import { sortByNestedParams, transformToUrl } from "../src/utils";
 
 const app_with_prefix = new Elysia({
-	prefix: "/api",
+	prefix: "/api", // BROKEN FOR NOW
 }).use(
 	autoload({
 		pattern: "**/*.{ts,js}",

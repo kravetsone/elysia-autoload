@@ -59,3 +59,9 @@ export function fixSlashes(prefix?: string) {
 
 	return prefix.slice(0, -1);
 }
+
+export function addRelativeIfNotDot(path: string) {
+	if (path.at(0) !== ".") return `./${path}`;
+
+	return path;
+}

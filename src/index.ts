@@ -9,6 +9,7 @@ import {
 } from "elysia";
 import type { BaseMacro } from "elysia/dist/types";
 import {
+	addRelativeIfNotDot,
 	fixSlashes,
 	getPath,
 	sortByNestedParams,
@@ -44,6 +45,7 @@ export interface IAutoloadOptions {
 	types?: ITypesOptions | true;
 }
 
+const DIR_ROUTES_DEFAULT = "./routes";
 const TYPES_OUTPUT_DEFAULT = "./routes-types.ts";
 const TYPES_TYPENAME_DEFAULT = "Routes";
 const TYPES_OBJECT_DEFAULT = {
@@ -55,8 +57,9 @@ export async function autoload(options: IAutoloadOptions = {}) {
 	// autoload-plugin-sources
 	const fileSources = {};
 
-	const { pattern, dir, prefix, schema } = options;
+	const { pattern, prefix, schema } = options;
 
+	const dir = options.dir ?? DIR_ROUTES_DEFAULT;
 	// some strange code to provide defaults
 	const types: Omit<ITypesOptions, "output"> & { output: string[] } =
 		options.types && options.types !== true
@@ -72,7 +75,7 @@ export async function autoload(options: IAutoloadOptions = {}) {
 				}
 			: TYPES_OBJECT_DEFAULT;
 
-	const directoryPath = getPath(dir || "./routes");
+	const directoryPath = getPath(dir);
 
 	if (!fs.existsSync(directoryPath))
 		throw new Error(`Directory ${directoryPath} doesn't exists`);
@@ -117,26 +120,30 @@ export async function autoload(options: IAutoloadOptions = {}) {
 		if (types) paths.push(fullPath.replace(directoryPath, ""));
 	}
 
-	// esbuild-plugin-autoload remove-start
 	if (types) {
-		const imports: string[] = paths.map(
-			(x, index) =>
-				`import type Route${index} from "${(
-					directoryPath + x.replace(".ts", "").replace(".tsx", "")
-				).replace(/\\/gu, "/")}";`,
-		);
-
 		for await (const outputPath of types.output) {
+			const outputAbsolutePath = getPath(outputPath);
+
+			const imports: string[] = paths.map(
+				(x, index) =>
+					`import type Route${index} from "${addRelativeIfNotDot(
+						path
+							.relative(
+								path.dirname(outputAbsolutePath),
+								directoryPath + x.replace(".ts", "").replace(".tsx", ""),
+							)
+							.replace(/\\/gu, "/"),
+					)}";`,
+			);
+
 			await Bun.write(
-				getPath(outputPath),
+				outputAbsolutePath,
 				[
 					`import type { ElysiaWithBaseUrl } from "elysia-autoload";`,
 					imports.join("\n"),
 					"",
 					!types.useExport ? "declare global {" : "",
-					`    export type ${
-						!types.typeName ? TYPES_TYPENAME_DEFAULT : types.typeName
-					} = ${paths
+					`    export type ${types.typeName} = ${paths
 						.map(
 							(x, index) =>
 								`ElysiaWithBaseUrl<"${
@@ -151,7 +158,6 @@ export async function autoload(options: IAutoloadOptions = {}) {
 		}
 	}
 
-	// esbuild-plugin-autoload remove-end
 	return plugin;
 }
 export * from "./types";
