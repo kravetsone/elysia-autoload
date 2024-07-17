@@ -1,13 +1,13 @@
 import fs from "node:fs";
 import path from "node:path";
 import {
+	type BaseMacro,
 	Elysia,
 	type InputSchema,
 	type LocalHook,
 	type RouteSchema,
 	type SingletonBase,
 } from "elysia";
-import type { BaseMacro } from "elysia/dist/types";
 import {
 	addRelativeIfNotDot,
 	fixSlashes,
@@ -16,7 +16,9 @@ import {
 	transformToUrl,
 } from "./utils";
 
-type TSchemaHandler = ({
+export type * from "./types";
+
+export type TSchemaHandler = ({
 	path,
 	url,
 }: {
@@ -54,9 +56,6 @@ const TYPES_OBJECT_DEFAULT = {
 } satisfies ITypesOptions;
 
 export async function autoload(options: IAutoloadOptions = {}) {
-	// autoload-plugin-sources
-	const fileSources = {};
-
 	const { pattern, prefix, schema } = options;
 
 	const dir = options.dir ?? DIR_ROUTES_DEFAULT;
@@ -162,4 +161,3 @@ export async function autoload(options: IAutoloadOptions = {}) {
 
 	return plugin;
 }
-export * from "./types";

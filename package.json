@@ -11,7 +11,7 @@
             "import": "./dist/index.js"
         }
     },
-    "description": "Plugin for Elysia which autoload all routes in directory and code-generate types for Eden",
+    "description": "Plugin for Elysia which autoload all routes in directory and code-generate types for Eden with Bun.build support",
     "homepage": "https://github.com/kravetsone/elysia-autoload",
     "keywords": [
         "bun",
