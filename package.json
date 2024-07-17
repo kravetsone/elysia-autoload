@@ -41,7 +41,6 @@
         "@elysiajs/swagger": "^1.1.0",
         "@types/bun": "^1.1.6",
         "elysia": "^1.1.2",
-        "husky": "^9.0.11",
         "pkgroll": "^2.1.1",
         "typescript": "^5.5.3"
     },

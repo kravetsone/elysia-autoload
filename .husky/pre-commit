@@ -1,2 +1,0 @@
-bun test
-bun lint:fix
