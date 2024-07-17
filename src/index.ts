@@ -61,19 +61,21 @@ export async function autoload(options: IAutoloadOptions = {}) {
 
 	const dir = options.dir ?? DIR_ROUTES_DEFAULT;
 	// some strange code to provide defaults
-	const types: Omit<ITypesOptions, "output"> & { output: string[] } =
-		options.types && options.types !== true
-			? {
-					...TYPES_OBJECT_DEFAULT,
-					...options.types,
-					// This code allows you to omit the output data or specify it as an string[] or string.
-					output: !options.types.output
-						? [TYPES_OUTPUT_DEFAULT]
-						: Array.isArray(options.types.output)
-							? options.types.output
-							: [options.types.output],
-				}
-			: TYPES_OBJECT_DEFAULT;
+	const types: (Omit<ITypesOptions, "output"> & { output: string[] }) | false =
+		options.types
+			? options.types !== true
+				? {
+						...TYPES_OBJECT_DEFAULT,
+						...options.types,
+						// This code allows you to omit the output data or specify it as an string[] or string.
+						output: !options.types.output
+							? [TYPES_OUTPUT_DEFAULT]
+							: Array.isArray(options.types.output)
+								? options.types.output
+								: [options.types.output],
+					}
+				: TYPES_OBJECT_DEFAULT
+			: false;
 
 	const directoryPath = getPath(dir);
 
