@@ -27,7 +27,7 @@
         "codegeneration"
     ],
     "scripts": {
-        "prepublishOnly": "bun test && bunx tsup && rm -f ./dist/index.d.сts",
+        "prepublishOnly": "bun test && bunx pkgroll",
         "lint": "bunx @biomejs/biome check src",
         "lint:fix": "bun lint --apply",
         "prepare": "bunx husky"
@@ -42,7 +42,7 @@
         "@types/bun": "^1.1.6",
         "elysia": "^1.1.2",
         "husky": "^9.0.11",
-        "tsup": "^8.1.1",
+        "pkgroll": "^2.1.1",
         "typescript": "^5.5.3"
     },
     "peerDependencies": {
