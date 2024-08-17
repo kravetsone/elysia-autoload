@@ -1,11 +1,14 @@
 import type Elysia from "elysia";
 import type { RouteBase } from "elysia";
 
-type RemoveLastChar<T extends string> = T extends `${infer V}/` ? V : T;
-
-type RoutesWithPrefix<Routes extends RouteBase, Prefix extends string> = {
-	[K in keyof Routes as `${Prefix}/${RemoveLastChar<K & string>}`]: Routes[K];
-};
+type PathToObject<
+  Path extends string,
+  Type extends RouteBase
+> = Path extends `${infer Head}/${infer Rest}`
+  ? Head extends ""
+    ? PathToObject<Rest, Type>
+    : { [K in Head]: PathToObject<Rest, Type> }
+  : { [K in Path]: Type };
 
 export type ElysiaWithBaseUrl<
 	BaseUrl extends string,
@@ -27,7 +30,7 @@ export type ElysiaWithBaseUrl<
 			Singleton,
 			Definitions,
 			Metadata,
-			RoutesWithPrefix<Routes, BaseUrl>,
+			PathToObject<BaseUrl, Routes>,
 			Ephemeral,
 			Volatile
 		>
