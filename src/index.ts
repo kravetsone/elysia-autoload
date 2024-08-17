@@ -8,6 +8,7 @@ import {
 	type RouteSchema,
 	type SingletonBase,
 } from "elysia";
+import type { SoftString } from "./types";
 import {
 	addRelativeIfNotDot,
 	fixSlashes,
@@ -50,6 +51,21 @@ export interface AutoloadOptions {
 	 * @default true
 	 */
 	failGlob?: boolean;
+	/**
+	 * import a specific `export` from a file
+	 * @example import first export
+	 * ```ts
+	 * import: (file) => Object.keys(file).at(0) || "default",
+	 * ```
+	 * @default "default"
+	 */
+	// biome-ignore lint/suspicious/noExplicitAny: import return any
+	import?: SoftString<"default"> | ((file: any) => string);
+	/**
+	 * Skip imports where needed `export` not defined
+	 * @default false
+	 */
+	skipImportErrors?: boolean;
 }
 
 const DIR_ROUTES_DEFAULT = "./routes";
@@ -63,6 +79,8 @@ const TYPES_OBJECT_DEFAULT = {
 export async function autoload(options: AutoloadOptions = {}) {
 	const { pattern, prefix, schema } = options;
 	const failGlob = options.failGlob ?? true;
+	const getImportName = options?.import ?? "default";
+
 	const dir = options.dir ?? DIR_ROUTES_DEFAULT;
 	// some strange code to provide defaults
 	const types: (Omit<TypesOptions, "output"> & { output: string[] }) | false =
@@ -118,18 +136,24 @@ export async function autoload(options: AutoloadOptions = {}) {
 
 		const file = await import(fullPath);
 
-		if (!file.default)
-			throw new Error(`${filePath} doesn't provide default export`);
+		const importName =
+			typeof getImportName === "string" ? getImportName : getImportName(file);
+
+		if (!file[importName] && options?.skipImportErrors) continue;
+
+		if (!file[importName])
+			throw new Error(`${filePath} don't provide export ${importName}`);
+
 		const url = transformToUrl(filePath);
 
 		const groupOptions = schema ? schema({ path: filePath, url }) : {};
 		// TODO: fix later
 		// @ts-expect-error
-		plugin.group(url, groupOptions, file.default);
+		plugin.group(url, groupOptions, file[importName]);
 
 		if (types) paths.push(fullPath.replace(directoryPath, ""));
 	}
-	console.log(1);
+
 	if (types) {
 		for await (const outputPath of types.output) {
 			const outputAbsolutePath = getPath(outputPath);

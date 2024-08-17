@@ -32,3 +32,5 @@ export type ElysiaWithBaseUrl<
 			Volatile
 		>
 	: never;
+
+export type SoftString<T extends string> = T | (string & {});
