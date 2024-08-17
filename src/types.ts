@@ -4,7 +4,7 @@ import type { RouteBase } from "elysia";
 type RemoveLastChar<T extends string> = T extends `${infer V}/` ? V : T;
 
 type RoutesWithPrefix<Routes extends RouteBase, Prefix extends string> = {
-	[K in keyof Routes as `${Prefix}${RemoveLastChar<K & string>}`]: Routes[K];
+	[K in keyof Routes as `${Prefix}/${RemoveLastChar<K & string>}`]: Routes[K];
 };
 
 export type ElysiaWithBaseUrl<
