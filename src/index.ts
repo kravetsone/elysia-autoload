@@ -18,7 +18,7 @@ import {
 
 export type * from "./types";
 
-export type TSchemaHandler = ({
+export type SchemaHandler = ({
 	path,
 	url,
 }: {
@@ -33,18 +33,23 @@ export type TSchemaHandler = ({
 	""
 >;
 
-export interface ITypesOptions {
+export interface TypesOptions {
 	output?: string | string[];
 	typeName?: string;
 	useExport?: boolean;
 }
 
-export interface IAutoloadOptions {
+export interface AutoloadOptions {
 	pattern?: string;
 	dir?: string;
 	prefix?: string;
-	schema?: TSchemaHandler;
-	types?: ITypesOptions | true;
+	schema?: SchemaHandler;
+	types?: TypesOptions | true;
+	/**
+	 * Throws an error if no matches are found.
+	 * @default true
+	 */
+	failGlob?: boolean;
 }
 
 const DIR_ROUTES_DEFAULT = "./routes";
@@ -53,14 +58,14 @@ const TYPES_TYPENAME_DEFAULT = "Routes";
 const TYPES_OBJECT_DEFAULT = {
 	output: [TYPES_OUTPUT_DEFAULT],
 	typeName: TYPES_TYPENAME_DEFAULT,
-} satisfies ITypesOptions;
+} satisfies TypesOptions;
 
-export async function autoload(options: IAutoloadOptions = {}) {
+export async function autoload(options: AutoloadOptions = {}) {
 	const { pattern, prefix, schema } = options;
-
+	const failGlob = options.failGlob ?? true;
 	const dir = options.dir ?? DIR_ROUTES_DEFAULT;
 	// some strange code to provide defaults
-	const types: (Omit<ITypesOptions, "output"> & { output: string[] }) | false =
+	const types: (Omit<TypesOptions, "output"> & { output: string[] }) | false =
 		options.types
 			? options.types !== true
 				? {
@@ -101,6 +106,10 @@ export async function autoload(options: IAutoloadOptions = {}) {
 			cwd: directoryPath,
 		}),
 	);
+	if (failGlob && files.length === 0)
+		throw new Error(
+			`No matches found in ${directoryPath}. You can disable this error by setting the failGlob parameter to false in the options of autoload plugin`,
+		);
 
 	const paths: string[] = [];
 
@@ -120,7 +129,7 @@ export async function autoload(options: IAutoloadOptions = {}) {
 
 		if (types) paths.push(fullPath.replace(directoryPath, ""));
 	}
-
+	console.log(1);
 	if (types) {
 		for await (const outputPath of types.output) {
 			const outputAbsolutePath = getPath(outputPath);

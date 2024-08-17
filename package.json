@@ -1,50 +1,48 @@
 {
-    "name": "elysia-autoload",
-    "version": "1.1.0",
-    "author": "kravetsone",
-    "type": "module",
-    "types": "./dist/index.d.ts",
-    "module": "./dist/index.js",
-    "exports": {
-        ".": {
-            "types": "./dist/index.d.ts",
-            "import": "./dist/index.js"
-        }
-    },
-    "description": "Plugin for Elysia which autoload all routes in directory and code-generate types for Eden with Bun.build support",
-    "homepage": "https://github.com/kravetsone/elysia-autoload",
-    "keywords": [
-        "bun",
-        "elysia",
-        "autoimports",
-        "autoload",
-        "nextjs",
-        "filerouter",
-        "autoroutes",
-        "eden",
-        "treaty",
-        "trpc",
-        "codegeneration"
-    ],
-    "scripts": {
-        "prepublishOnly": "bun test && bunx pkgroll",
-        "lint": "bunx @biomejs/biome check src",
-        "lint:fix": "bun lint --apply",
-        "prepare": "bunx husky"
-    },
-    "files": [
-        "dist"
-    ],
-    "devDependencies": {
-        "@biomejs/biome": "1.8.3",
-        "@elysiajs/eden": "^1.1.0",
-        "@elysiajs/swagger": "^1.1.0",
-        "@types/bun": "^1.1.6",
-        "elysia": "^1.1.2",
-        "pkgroll": "^2.1.1",
-        "typescript": "^5.5.3"
-    },
-    "peerDependencies": {
-        "elysia": "^1.1.0"
-    }
+	"name": "elysia-autoload",
+	"version": "1.2.0",
+	"author": "kravetsone",
+	"type": "module",
+	"types": "./dist/index.d.ts",
+	"module": "./dist/index.js",
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"import": "./dist/index.js"
+		}
+	},
+	"description": "Plugin for Elysia which autoload all routes in directory and code-generate types for Eden with Bun.build support",
+	"homepage": "https://github.com/kravetsone/elysia-autoload",
+	"keywords": [
+		"bun",
+		"elysia",
+		"autoimports",
+		"autoload",
+		"nextjs",
+		"filerouter",
+		"autoroutes",
+		"eden",
+		"treaty",
+		"trpc",
+		"codegeneration"
+	],
+	"scripts": {
+		"prepublishOnly": "bun test && bunx pkgroll",
+		"lint": "bunx @biomejs/biome check src",
+		"lint:fix": "bun lint --apply",
+		"prepare": "bunx husky"
+	},
+	"files": ["dist"],
+	"devDependencies": {
+		"@biomejs/biome": "1.8.3",
+		"@elysiajs/eden": "^1.1.0",
+		"@elysiajs/swagger": "^1.1.0",
+		"@types/bun": "^1.1.6",
+		"elysia": "^1.1.2",
+		"pkgroll": "^2.1.1",
+		"typescript": "^5.5.3"
+	},
+	"peerDependencies": {
+		"elysia": "^1.1.0"
+	}
 }
