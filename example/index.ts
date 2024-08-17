@@ -18,6 +18,13 @@ export const app = new Elysia({
 		}),
 	);
 
-app.listen(3002, () => console.log("started"));
+await app.modules;
+
+app.listen(3002, () =>
+	console.log(
+		"started",
+		app.routes.map((x) => x.path),
+	),
+);
 
 export type ElysiaApp = typeof app;

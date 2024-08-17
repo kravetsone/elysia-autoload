@@ -147,9 +147,24 @@ export async function autoload(options: AutoloadOptions = {}) {
 		const url = transformToUrl(filePath);
 
 		const groupOptions = schema ? schema({ path: filePath, url }) : {};
+
+		const importedValue = file[importName];
 		// TODO: fix later
-		// @ts-expect-error
-		plugin.group(url, groupOptions, file[importName]);
+		console.log(
+			importedValue.toString(),
+			importedValue.length,
+			typeof importedValue === "function" && !importedValue.length,
+			importedValue instanceof Elysia,
+		);
+		if (typeof importedValue === "function" && importedValue.length)
+			// @ts-expect-error
+			plugin.group(url, groupOptions, importedValue);
+		if (typeof importedValue === "function" && !importedValue.length)
+			// @ts-expect-error
+			plugin.group(url, groupOptions, (app) => app.use(importedValue()));
+		if (importedValue instanceof Elysia)
+			// @ts-expect-error
+			plugin.group(url, groupOptions, (app) => app.use(importedValue));
 
 		if (types) paths.push(fullPath.replace(directoryPath, ""));
 	}
