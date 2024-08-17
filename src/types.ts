@@ -27,10 +27,10 @@ type FlattenIndexRoutes<T> = T extends object
         ? T[K] extends RouteEndType
           ? never
           : K
-        : K]: FlattenIndex<T[K]>;
+        : K]: FlattenIndexRoutes<T[K]>;
     } & (T extends { index: infer I }
       ? I extends RouteEndType
-        ? FlattenIndex<I>
+        ? FlattenIndexRoutes<I>
         : {}
       : {})
   : T;
