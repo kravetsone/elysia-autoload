@@ -31,8 +31,8 @@ type FlattenIndexRoutes<T> = T extends object
     } & (T extends { index: infer I }
       ? I extends RouteEndType
         ? FlattenIndexRoutes<I>
-        : {}
-      : {})
+        : T
+      : T)
   : T;
 
 export type ElysiaWithBaseUrl<
