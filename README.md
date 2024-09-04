@@ -2,7 +2,7 @@
 
 Plugin for [Elysia](https://elysiajs.com/) which autoload all routes in directory and code-generate types for [Eden](https://elysiajs.com/eden/overview.html) with [`Bun.build`](#bun-build-usage) support!
 
-**Currently, Eden types generation is broken!!**
+**Currently, Eden types generation is broken!!** Feels free to send PR
 
 ## Installation
 
@@ -65,6 +65,9 @@ Guide how `elysia-autoload` match routes
             └──index.ts
     ├── frontend
         └──index.tsx // usage of tsx extension
+    ├── events
+        └──(post).ts // post and get will not be in the link
+        └──(get).ts
     └── users.ts
 └── package.json
 ```
@@ -76,6 +79,8 @@ Guide how `elysia-autoload` match routes
 -   /routes/likes/[...].ts → /likes/\*
 -   /routes/domains/@[...]/index.ts → /domains/@\*
 -   /routes/frontend/index.tsx → /frontend
+-   /routes/events/(post).ts → /events
+-   /routes/events/(get).ts → /events
 
 ## Options
 
