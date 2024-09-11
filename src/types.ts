@@ -35,11 +35,19 @@ type FlattenIndexRoutes<T> = T extends object
       : T)
   : T;
 
+namespace ElysiaMatch {
+  export type Any = Elysia<any, any, any, any, any, any, any, any>;
+  export type Fx = (...args: any[]) => Any;
+  export type All = Any | Fx;
+
+  export type Extract<T extends All> = T extends Fx ? ReturnType<T> : T;
+}
+
 export type ElysiaWithBaseUrl<
   BaseUrl extends string,
   // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-  ElysiaType extends Elysia<any, any, any, any, any, any, any, any>
-> = ElysiaType extends Elysia<
+  ElysiaType extends ElysiaMatch.All
+> = ElysiaMatch.Extract<ElysiaType> extends Elysia<
   infer BasePath,
   infer Scoped,
   infer Singleton,
