@@ -29,8 +29,7 @@
 	"scripts": {
 		"prepublishOnly": "bun test && bunx pkgroll",
 		"lint": "bunx @biomejs/biome check src",
-		"lint:fix": "bun lint --apply",
-		"prepare": "bunx husky"
+		"lint:fix": "bun lint --apply"
 	},
 	"files": ["dist"],
 	"devDependencies": {
