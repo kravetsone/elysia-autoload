@@ -129,7 +129,7 @@ export async function autoload(options: AutoloadOptions = {}) {
 			`No matches found in ${directoryPath}. You can disable this error by setting the failGlob parameter to false in the options of autoload plugin`,
 		);
 
-	const paths: string[] = [];
+	const paths: [path: string, exportName: string][] = [];
 
 	for await (const filePath of sortByNestedParams(files)) {
 		const fullPath = path.join(directoryPath, filePath);
@@ -160,7 +160,7 @@ export async function autoload(options: AutoloadOptions = {}) {
 			// @ts-expect-error
 			plugin.group(url, groupOptions, (app) => app.use(importedValue));
 
-		if (types) paths.push(fullPath.replace(directoryPath, ""));
+		if (types) paths.push([fullPath.replace(directoryPath, ""), importName]);
 	}
 
 	if (types) {
@@ -168,8 +168,8 @@ export async function autoload(options: AutoloadOptions = {}) {
 			const outputAbsolutePath = getPath(outputPath);
 
 			const imports: string[] = paths.map(
-				(x, index) =>
-					`import type Route${index} from "${addRelativeIfNotDot(
+				([x, exportName], index) =>
+					`import type ${exportName === "default" ? `Route${index}` : `{ ${exportName} as Route${index} }`} from "${addRelativeIfNotDot(
 						path
 							.relative(
 								path.dirname(outputAbsolutePath),
@@ -188,7 +188,7 @@ export async function autoload(options: AutoloadOptions = {}) {
 					!types.useExport ? "declare global {" : "",
 					`    export type ${types.typeName} = ${paths
 						.map(
-							(x, index) =>
+							([x], index) =>
 								`ElysiaWithBaseUrl<"${
 									((prefix?.endsWith("/") ? prefix.slice(0, -1) : prefix) ??
 										"") + transformToUrl(x) || "/"
