@@ -3,11 +3,11 @@
   "module": "index.ts",
   "type": "module",
   "devDependencies": {
-    "@types/bun": "latest",
-    "esbuild-plugin-autoload": "^0.1.2",
+    "@types/bun": "^1.1.9",
+    "esbuild-plugin-autoload": "^0.2.1",
     "elysia-autoload": "link:elysia-autoload"
   },
   "peerDependencies": {
-    "typescript": "^5.4.5"
+    "typescript": "^5.6.2"
   }
 }
