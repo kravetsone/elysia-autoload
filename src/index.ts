@@ -149,13 +149,7 @@ export async function autoload(options: AutoloadOptions = {}) {
 		const groupOptions = schema ? schema({ path: filePath, url }) : {};
 
 		const importedValue = file[importName];
-		// TODO: fix later
-		// console.log(
-		// 	importedValue.toString(),
-		// 	importedValue.length,
-		// 	typeof importedValue === "function" && !importedValue.length,
-		// 	importedValue instanceof Elysia,
-		// );
+		// TODO: fix type-error later
 		if (typeof importedValue === "function" && importedValue.length)
 			// @ts-expect-error
 			plugin.group(url, groupOptions, importedValue);

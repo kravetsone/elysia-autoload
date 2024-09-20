@@ -2,8 +2,6 @@
 
 Plugin for [Elysia](https://elysiajs.com/) which autoload all routes in directory and code-generate types for [Eden](https://elysiajs.com/eden/overview.html) with [`Bun.build`](#bun-build-usage) support!
 
-**Currently, Eden types generation is broken!!** Feels free to send PR
-
 ## Installation
 
 ### Start new project with [create-elysiajs](https://github.com/kravetsone/create-elysiajs)
@@ -124,14 +122,14 @@ export type ElysiaApp = typeof app;
 ```ts
 // client.ts
 
-import { edenTreaty } from "@elysiajs/eden";
+import { treaty } from "@elysiajs/eden";
 
 // Routes are a global type so you don't need to import it.
 
-const app = edenTreaty<Routes>("http://localhost:3002");
+const app = treaty<Routes>("http://localhost:3002");
 
 const { data } = await app.test["some-path-param"].get({
-    $query: {
+    query: {
         key: 2,
     },
 });
@@ -149,14 +147,12 @@ import type Route0 from "./routes/index";
 import type Route1 from "./routes/test/[some]/index";
 
 declare global {
-    export type Routes = ElysiaWithBaseUrl<"/api", ReturnType<typeof Route0>> &
-        ElysiaWithBaseUrl<"/api/test/:some", ReturnType<typeof Route1>>;
+    export type Routes = ElysiaWithBaseUrl<"/api", typeof Route0> &
+        ElysiaWithBaseUrl<"/api/test/:some", typeof Route1>;
 }
 ```
 
 Example of app with types code-generation you can see in [example](https://github.com/kravetsone/elysia-autoload/tree/main/example)
-
-**Currently, Eden types generation is broken!!**
 
 ### [Bun build](https://bun.sh/docs/bundler) usage
 
