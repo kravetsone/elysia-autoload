@@ -62,6 +62,11 @@ export interface AutoloadOptions {
 	// biome-ignore lint/suspicious/noExplicitAny: import return any
 	import?: SoftString<"default"> | ((file: any) => string);
 	/**
+	 * Enable to use Node.js instead of Bun
+	 * @default false
+	 */
+	useNode?: boolean;
+	/**
 	 * Skip imports where needed `export` not defined
 	 * @default false
 	 */
@@ -117,13 +122,9 @@ export async function autoload(options: AutoloadOptions = {}) {
 		},
 	});
 
-	const glob = new Bun.Glob(pattern || "**/*.{ts,tsx,js,jsx,mjs,cjs}");
-
-	const files = await Array.fromAsync(
-		glob.scan({
-			cwd: directoryPath,
-		}),
-	);
+	const files = options.useNode === true
+		? fs.globSync(pattern || "**/*.{ts,tsx,js,jsx,mjs,cjs}", { cwd: directoryPath })
+		: await Array.fromAsync((new Bun.Glob(pattern || "**/*.{ts,tsx,js,jsx,mjs,cjs}")).scan({ cwd: directoryPath }));
 	if (failGlob && files.length === 0)
 		throw new Error(
 			`No matches found in ${directoryPath}. You can disable this error by setting the failGlob parameter to false in the options of autoload plugin`,
@@ -181,25 +182,27 @@ export async function autoload(options: AutoloadOptions = {}) {
 					)}";`,
 			);
 
-			await Bun.write(
-				outputAbsolutePath,
-				[
-					`import type { ElysiaWithBaseUrl } from "elysia-autoload";`,
-					imports.join("\n"),
-					"",
-					!types.useExport ? "declare global {" : "",
-					`    export type ${types.typeName} = ${paths
-						.map(
-							([x], index) =>
-								`ElysiaWithBaseUrl<"${
-									((prefix?.endsWith("/") ? prefix.slice(0, -1) : prefix) ??
-										"") + transformToUrl(x) || "/"
-								}", typeof Route${index}>`,
-						)
-						.join("\n              & ")}`,
-					!types.useExport ? "}" : "",
-				].join("\n"),
-			);
+			const input = [
+				`import type { ElysiaWithBaseUrl } from "elysia-autoload";`,
+				imports.join("\n"),
+				"",
+				!types.useExport ? "declare global {" : "",
+				`    export type ${types.typeName} = ${paths
+					.map(
+						([x], index) =>
+							`ElysiaWithBaseUrl<"${
+								((prefix?.endsWith("/") ? prefix.slice(0, -1) : prefix) ??
+									"") + transformToUrl(x) || "/"
+							}", typeof Route${index}>`,
+					)
+					.join("\n              & ")}`,
+				!types.useExport ? "}" : "",
+			].join("\n");
+			if (options.useNode === true) {
+				fs.writeFileSync(outputAbsolutePath, input);
+			} else {
+				await Bun.write(outputAbsolutePath, input);
+			}
 		}
 	}
 

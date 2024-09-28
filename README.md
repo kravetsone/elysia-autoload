@@ -97,6 +97,7 @@ Guide how `elysia-autoload` match routes
 | output?    | string \| string[] | "./routes-types.ts" | Type code-generation output. It can be an array                                         |
 | typeName?  | string             | "Routes"            | Name for code-generated global type for [Eden](https://elysiajs.com/eden/overview.html) |
 | useExport? | boolean            | false               | Use export instead of global type                                                       |
+| useNode?   | boolean            | false               | Enable to use Node.js instead of Bun                                                    |
 
 ### Usage of types code-generation for [Eden](https://elysiajs.com/eden/overview.html)
 
