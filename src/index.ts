@@ -62,11 +62,6 @@ export interface AutoloadOptions {
 	// biome-ignore lint/suspicious/noExplicitAny: import return any
 	import?: SoftString<"default"> | ((file: any) => string);
 	/**
-	 * Enable to use Node.js instead of Bun
-	 * @default false
-	 */
-	useNode?: boolean;
-	/**
 	 * Skip imports where needed `export` not defined
 	 * @default false
 	 */
@@ -122,7 +117,7 @@ export async function autoload(options: AutoloadOptions = {}) {
 		},
 	});
 
-	const files = options.useNode === true
+	const files = typeof Bun === "undefined"
 		? fs.globSync(pattern || "**/*.{ts,tsx,js,jsx,mjs,cjs}", { cwd: directoryPath })
 		: await Array.fromAsync((new Bun.Glob(pattern || "**/*.{ts,tsx,js,jsx,mjs,cjs}")).scan({ cwd: directoryPath }));
 	if (failGlob && files.length === 0)
@@ -198,7 +193,7 @@ export async function autoload(options: AutoloadOptions = {}) {
 					.join("\n              & ")}`,
 				!types.useExport ? "}" : "",
 			].join("\n");
-			if (options.useNode === true) {
+			if (typeof Bun === "undefined") {
 				fs.writeFileSync(outputAbsolutePath, input);
 			} else {
 				await Bun.write(outputAbsolutePath, input);
