@@ -139,16 +139,17 @@ export async function autoload(options: AutoloadOptions = {}) {
 		const importName =
 			typeof getImportName === "string" ? getImportName : getImportName(file);
 
-		if (!file[importName] && options?.skipImportErrors) continue;
-
-		if (!file[importName])
-			throw new Error(`${filePath} don't provide export ${importName}`);
+		const importedValue = file[importName];
+		if (!importedValue)
+			if (options?.skipImportErrors)
+				continue;
+			else
+				throw new Error(`${filePath} don't provide export ${importName}`);
 
 		const url = transformToUrl(filePath);
 
 		const groupOptions = schema ? schema({ path: filePath, url }) : {};
 
-		const importedValue = file[importName];
 		// TODO: fix type-error later
 		if (typeof importedValue === "function")
 			if (importedValue.length)
