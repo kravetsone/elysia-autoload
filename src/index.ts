@@ -152,7 +152,7 @@ export async function autoload(options: AutoloadOptions = {}) {
 
 		// TODO: fix type-error later
 		if (typeof importedValue === "function")
-			if (importedValue.length)
+			if (importedValue.length > 0)
 				// @ts-expect-error
 				plugin.group(url, groupOptions, importedValue);
 			else
