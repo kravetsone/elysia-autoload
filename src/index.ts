@@ -150,13 +150,14 @@ export async function autoload(options: AutoloadOptions = {}) {
 
 		const importedValue = file[importName];
 		// TODO: fix type-error later
-		if (typeof importedValue === "function" && importedValue.length)
-			// @ts-expect-error
-			plugin.group(url, groupOptions, importedValue);
-		if (typeof importedValue === "function" && !importedValue.length)
-			// @ts-expect-error
-			plugin.group(url, groupOptions, (app) => app.use(importedValue()));
-		if (importedValue instanceof Elysia)
+		if (typeof importedValue === "function")
+			if (importedValue.length)
+				// @ts-expect-error
+				plugin.group(url, groupOptions, importedValue);
+			else
+				// @ts-expect-error
+				plugin.group(url, groupOptions, (app) => app.use(importedValue()));
+		else if (importedValue instanceof Elysia)
 			// @ts-expect-error
 			plugin.group(url, groupOptions, (app) => app.use(importedValue));
 
