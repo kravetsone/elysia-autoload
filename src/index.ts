@@ -117,9 +117,12 @@ export async function autoload(options: AutoloadOptions = {}) {
 		},
 	});
 
+	const globPattern = pattern || "**/*.{ts,tsx,js,jsx,mjs,cjs}";
+	const globOptions = { cwd: directoryPath };
+
 	const files = typeof Bun === "undefined"
-		? fs.globSync(pattern || "**/*.{ts,tsx,js,jsx,mjs,cjs}", { cwd: directoryPath })
-		: await Array.fromAsync((new Bun.Glob(pattern || "**/*.{ts,tsx,js,jsx,mjs,cjs}")).scan({ cwd: directoryPath }));
+		? fs.globSync(globPattern, globOptions)
+		: await Array.fromAsync((new Bun.Glob(globPattern)).scan(globOptions));
 	if (failGlob && files.length === 0)
 		throw new Error(
 			`No matches found in ${directoryPath}. You can disable this error by setting the failGlob parameter to false in the options of autoload plugin`,
