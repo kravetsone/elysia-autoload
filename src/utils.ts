@@ -10,41 +10,23 @@ export function getPath(dir: string) {
 
 // Inspired by https://github.com/wobsoriano/elysia-autoroutes/blob/main/src/utils/transformPathToUrl.ts#L4C31-L4C31
 export function transformToUrl(path: string) {
-    const replacements = [
+    return path
         // Clean the url extensions
-        { regex: /\.(ts|tsx|js|jsx|mjs|cjs)$/u, replacement: "" },
+        .replace(/\.(ts|tsx|js|jsx|mjs|cjs)$/u, "")
         // Fix windows slashes
-        { regex: /\\/gu, replacement: "/" },
-
+        .replaceAll("\\", "/")
         // Handle wild card based routes - users/[...id]/profile.ts -> users/*/profile
-        { regex: /\[\.\.\..*\]/gu, replacement: "*" },
-
+        .replaceAll(/\[\.\.\..*\]/gu, "*")
         // Handle generic square bracket based routes - users/[id]/index.ts -> users/:id
-        {
-            regex: /\[(.*?)\]/gu,
-            replacement: (_: string, match: string) => `:${match}`,
-        },
-        {
-            regex: /\/?\((.*)\)/,
-            replacement: "",
-        },
+        .replaceAll(/\[(.*?)\]/gu, (_: string, match: string) => `:${match}`)
+        .replace(/\/?\((.*)\)/, "")
         // Handle the case when multiple parameters are present in one file
         // users / [id] - [name].ts to users /: id -:name and users / [id] - [name] / [age].ts to users /: id -: name /: age
-        { regex: /\]-\[/gu, replacement: "-:" },
-        { regex: /\]\//gu, replacement: "/" },
-        { regex: /\[/gu, replacement: "" },
-        { regex: /\]/gu, replacement: "" },
+        .replaceAll(']-[', "-:")
+        .replaceAll(']/', "/")
+        .replaceAll(/\[|\]/gu, "")
         // remove index from end of path
-        { regex: /\/?index$/, replacement: "" },
-    ];
-
-    let url = path;
-
-    for (const { regex, replacement } of replacements) {
-        url = url.replace(regex, replacement as string);
-    }
-
-    return url;
+        .replace(/\/?index$/, "")
 }
 
 function getParamsCount(path: string) {

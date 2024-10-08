@@ -173,9 +173,9 @@ export async function autoload(options: AutoloadOptions = {}) {
 						path
 							.relative(
 								path.dirname(outputAbsolutePath),
-								directoryPath + x.replace(".ts", "").replace(".tsx", ""),
+								directoryPath + x.replace(/\.(ts|tsx)$/, ""),
 							)
-							.replace(/\\/gu, "/"),
+							.replaceAll("\\", "/"),
 					)}";`,
 			);
 
