@@ -32,8 +32,7 @@ export function transformToUrl(path: string) {
         // users / [id] - [name].ts to users /: id -:name and users / [id] - [name] / [age].ts to users /: id -: name /: age
         { regex: /\]-\[/gu, replacement: "-:" },
         { regex: /\]\//gu, replacement: "/" },
-        { regex: /\[/gu, replacement: "" },
-        { regex: /\]/gu, replacement: "" },
+        { regex: /\[|\]/gu, replacement: "" },
         // remove index from end of path
         { regex: /\/?index$/, replacement: "" },
     ];
