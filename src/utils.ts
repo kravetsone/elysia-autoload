@@ -20,14 +20,8 @@ export function transformToUrl(path: string) {
         { regex: /\[\.\.\..*\]/gu, replacement: "*" },
 
         // Handle generic square bracket based routes - users/[id]/index.ts -> users/:id
-        {
-            regex: /\[(.*?)\]/gu,
-            replacement: (_: string, match: string) => `:${match}`,
-        },
-        {
-            regex: /\/?\((.*)\)/,
-            replacement: "",
-        },
+        { regex: /\[(.*?)\]/gu, replacement: (_: string, match: string) => `:${match}` },
+        { regex: /\/?\((.*)\)/, replacement: "" },
         // Handle the case when multiple parameters are present in one file
         // users / [id] - [name].ts to users /: id -:name and users / [id] - [name] / [age].ts to users /: id -: name /: age
         { regex: /\]-\[/gu, replacement: "-:" },
