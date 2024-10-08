@@ -42,7 +42,7 @@ export type ElysiaApp = typeof app;
 // routes/index.ts
 import type { ElysiaApp } from "app";
 
-export default (app: ElysiaApp) => app.get("/", { hello: "world" });
+export default (app: ElysiaApp) => app.get("", { hello: "world" });
 ```
 
 ### Directory structure
