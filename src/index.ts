@@ -13,7 +13,6 @@ import {
 	addRelativeIfNotDot,
 	fixSlashes,
 	getPath,
-	sortByNestedParams,
 	transformToUrl,
 } from "./utils";
 
@@ -47,11 +46,6 @@ export interface AutoloadOptions {
 	schema?: SchemaHandler;
 	types?: TypesOptions | true;
 	/**
-	 * Throws an error if no matches are found.
-	 * @default true
-	 */
-	failGlob?: boolean;
-	/**
 	 * import a specific `export` from a file
 	 * @example import first export
 	 * ```ts
@@ -78,7 +72,6 @@ const TYPES_OBJECT_DEFAULT = {
 
 export async function autoload(options: AutoloadOptions = {}) {
 	const { pattern, prefix, schema } = options;
-	const failGlob = options.failGlob ?? true;
 	const getImportName = options?.import ?? "default";
 
 	const dir = options.dir ?? DIR_ROUTES_DEFAULT;
@@ -117,21 +110,16 @@ export async function autoload(options: AutoloadOptions = {}) {
 		},
 	});
 
-	const glob = new Bun.Glob(pattern || "**/*.{ts,tsx,js,jsx,mjs,cjs}");
+	const globPattern = pattern || "**/*.{ts,tsx,js,jsx,mjs,cjs}";
+	const globOptions = { cwd: directoryPath };
 
-	const files = await Array.fromAsync(
-		glob.scan({
-			cwd: directoryPath,
-		}),
-	);
-	if (failGlob && files.length === 0)
-		throw new Error(
-			`No matches found in ${directoryPath}. You can disable this error by setting the failGlob parameter to false in the options of autoload plugin`,
-		);
+	const files = typeof Bun === "undefined"
+		? fs.promises.glob(globPattern, globOptions)
+		: (new Bun.Glob(globPattern)).scan(globOptions);
 
 	const paths: [path: string, exportName: string][] = [];
 
-	for await (const filePath of sortByNestedParams(files)) {
+	for await (const filePath of files) {
 		const fullPath = path.join(directoryPath, filePath);
 
 		const file = await import(fullPath);
@@ -179,25 +167,27 @@ export async function autoload(options: AutoloadOptions = {}) {
 					)}";`,
 			);
 
-			await Bun.write(
-				outputAbsolutePath,
-				[
-					`import type { ElysiaWithBaseUrl } from "elysia-autoload";`,
-					imports.join("\n"),
-					"",
-					!types.useExport ? "declare global {" : "",
-					`    export type ${types.typeName} = ${paths
-						.map(
-							([x], index) =>
-								`ElysiaWithBaseUrl<"${
-									((prefix?.endsWith("/") ? prefix.slice(0, -1) : prefix) ??
-										"") + transformToUrl(x) || "/"
-								}", typeof Route${index}>`,
-						)
-						.join("\n              & ")}`,
-					!types.useExport ? "}" : "",
-				].join("\n"),
-			);
+			const input = [
+				`import type { ElysiaWithBaseUrl } from "elysia-autoload";`,
+				imports.join("\n"),
+				"",
+				!types.useExport ? "declare global {" : "",
+				`    export type ${types.typeName} = ${paths
+					.map(
+						([x], index) =>
+							`ElysiaWithBaseUrl<"${
+								((prefix?.endsWith("/") ? prefix.slice(0, -1) : prefix) ??
+									"") + transformToUrl(x) || "/"
+							}", typeof Route${index}>`,
+					)
+					.join("\n              & ")}`,
+				!types.useExport ? "}" : "",
+			].join("\n");
+			if (typeof Bun === "undefined") {
+				fs.writeFileSync(outputAbsolutePath, input);
+			} else {
+				await Bun.write(outputAbsolutePath, input);
+			}
 		}
 	}
 

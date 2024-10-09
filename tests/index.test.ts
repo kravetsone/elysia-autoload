@@ -2,7 +2,7 @@ import { describe, expect, test } from "bun:test";
 import { edenFetch } from "@elysiajs/eden";
 import { Elysia } from "elysia";
 import { autoload } from "../src/index";
-import { sortByNestedParams, transformToUrl } from "../src/utils";
+import { transformToUrl } from "../src/utils";
 
 // const app_with_prefix = new Elysia({
 // 	prefix: "/api", // BROKEN FOR NOW
@@ -61,34 +61,6 @@ describe("Path to URL", () => {
     });
     test("(post).ts → ", () => {
         expect(transformToUrl("(post).ts")).toBe("");
-    });
-});
-
-describe("sortByNestedParams", () => {
-    test("Place routes with params to the end of array", () => {
-        expect(
-            sortByNestedParams([
-                "/index.ts",
-                "/likes/test.ts",
-                "/domains/[test]/some.ts",
-                "/domains/[test]/[some].ts",
-                "/likes/[...].ts",
-                "/posts/some.ts",
-                "/posts/[id].ts",
-            ])
-        ).toEqual([
-            "/index.ts",
-            "/likes/test.ts",
-            "/posts/some.ts",
-            "/domains/[test]/some.ts",
-            "/likes/[...].ts",
-            "/posts/[id].ts",
-            "/domains/[test]/[some].ts",
-        ]);
-    });
-
-    test("Verify Intellisense", () => {
-        // const request = fetcher("", {});
     });
 });
 

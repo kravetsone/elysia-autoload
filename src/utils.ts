@@ -47,16 +47,6 @@ export function transformToUrl(path: string) {
     return url;
 }
 
-function getParamsCount(path: string) {
-    return path.match(/\[(.*?)\]/gu)?.length || 0;
-}
-
-// Is it necessary?..
-// Sorts by the smallest parameters
-export function sortByNestedParams(routes: string[]): string[] {
-    return routes.sort((a, b) => getParamsCount(a) - getParamsCount(b));
-}
-
 export function fixSlashes(prefix?: string) {
     if (!prefix?.endsWith("/")) return prefix;
 
