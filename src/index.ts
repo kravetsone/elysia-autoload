@@ -13,7 +13,6 @@ import {
 	addRelativeIfNotDot,
 	fixSlashes,
 	getPath,
-	sortByNestedParams,
 	transformToUrl,
 } from "./utils";
 
@@ -47,11 +46,6 @@ export interface AutoloadOptions {
 	schema?: SchemaHandler;
 	types?: TypesOptions | true;
 	/**
-	 * Throws an error if no matches are found.
-	 * @default true
-	 */
-	failGlob?: boolean;
-	/**
 	 * import a specific `export` from a file
 	 * @example import first export
 	 * ```ts
@@ -78,7 +72,6 @@ const TYPES_OBJECT_DEFAULT = {
 
 export async function autoload(options: AutoloadOptions = {}) {
 	const { pattern, prefix, schema } = options;
-	const failGlob = options.failGlob ?? true;
 	const getImportName = options?.import ?? "default";
 
 	const dir = options.dir ?? DIR_ROUTES_DEFAULT;
@@ -121,16 +114,12 @@ export async function autoload(options: AutoloadOptions = {}) {
 	const globOptions = { cwd: directoryPath };
 
 	const files = typeof Bun === "undefined"
-		? fs.globSync(globPattern, globOptions)
-		: await Array.fromAsync((new Bun.Glob(globPattern)).scan(globOptions));
-	if (failGlob && files.length === 0)
-		throw new Error(
-			`No matches found in ${directoryPath}. You can disable this error by setting the failGlob parameter to false in the options of autoload plugin`,
-		);
+		? fs.promises.glob(globPattern, globOptions)
+		: (new Bun.Glob(globPattern)).scan(globOptions);
 
 	const paths: [path: string, exportName: string][] = [];
 
-	for await (const filePath of sortByNestedParams(files)) {
+	for await (const filePath of files) {
 		const fullPath = path.join(directoryPath, filePath);
 
 		const file = await import(fullPath);
