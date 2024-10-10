@@ -130,7 +130,7 @@ export async function autoload(options: AutoloadOptions = {}) {
 
 	const paths: [path: string, exportName: string][] = [];
 
-	for await (const filePath of sortByNestedParams(files)) {
+	for (const filePath of sortByNestedParams(files)) {
 		const fullPath = path.join(directoryPath, filePath);
 
 		const file = await import(fullPath);
