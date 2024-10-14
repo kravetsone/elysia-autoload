@@ -140,11 +140,10 @@ export async function autoload(options: AutoloadOptions = {}) {
 			typeof getImportName === "string" ? getImportName : getImportName(file);
 
 		const importedValue = file[importName];
-		if (!importedValue)
-			if (options?.skipImportErrors)
-				continue;
-			else
-				throw new Error(`${filePath} don't provide export ${importName}`);
+		if (!importedValue) {
+			if (options?.skipImportErrors) continue;
+			throw new Error(`${filePath} don't provide export ${importName}`);
+		}
 
 		const url = transformToUrl(filePath);
 
@@ -155,9 +154,8 @@ export async function autoload(options: AutoloadOptions = {}) {
 			if (importedValue.length > 0)
 				// @ts-expect-error
 				plugin.group(url, groupOptions, importedValue);
-			else
-				// @ts-expect-error
-				plugin.group(url, groupOptions, (app) => app.use(importedValue()));
+			// @ts-expect-error
+			else plugin.group(url, groupOptions, (app) => app.use(importedValue()));
 		else if (importedValue instanceof Elysia)
 			// @ts-expect-error
 			plugin.group(url, groupOptions, (app) => app.use(importedValue));
@@ -192,8 +190,9 @@ export async function autoload(options: AutoloadOptions = {}) {
 						.map(
 							([x], index) =>
 								`ElysiaWithBaseUrl<"${
-									((prefix?.endsWith("/") ? prefix.slice(0, -1) : prefix) ??
-										"") + transformToUrl(x) || "/"
+									(
+										(prefix?.endsWith("/") ? prefix.slice(0, -1) : prefix) ?? ""
+									) + transformToUrl(x) || "/"
 								}", typeof Route${index}>`,
 						)
 						.join("\n              & ")}`,
