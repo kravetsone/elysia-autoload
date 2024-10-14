@@ -122,9 +122,10 @@ export async function autoload(options: AutoloadOptions = {}) {
 	const globPattern = pattern || "**/*.{ts,tsx,js,jsx,mjs,cjs}";
 	const globOptions = { cwd: directoryPath };
 
-	const files = typeof Bun === "undefined"
-		? fs.globSync(globPattern, globOptions)
-		: await Array.fromAsync(new Bun.Glob(globPattern).scan(globOptions));
+	const files =
+		typeof Bun === "undefined"
+			? fs.globSync(globPattern, globOptions)
+			: await Array.fromAsync(new Bun.Glob(globPattern).scan(globOptions));
 	if (failGlob && files.length === 0)
 		throw new Error(
 			`No matches found in ${directoryPath}. You can disable this error by setting the failGlob parameter to false in the options of autoload plugin`,
@@ -134,12 +135,13 @@ export async function autoload(options: AutoloadOptions = {}) {
 
 	for (const filePath of sortByNestedParams(files)) {
 		const fullPath = path.join(directoryPath, filePath);
-		const extension = path.extname(filePath)
-		let file
-		if (typeof Bun === 'undefined')
-			file = (extension === '.ts' || extension === '.tsx')
-				? await importFile(fullPath)
-				: await import(pathToFileURL(fullPath).href);
+		const extension = path.extname(filePath);
+		let file;
+		if (typeof Bun === "undefined")
+			file =
+				extension === ".ts" || extension === ".tsx"
+					? await importFile(fullPath)
+					: await import(pathToFileURL(fullPath).href);
 
 		const importName =
 			typeof getImportName === "string" ? getImportName : getImportName(file);
@@ -161,7 +163,7 @@ export async function autoload(options: AutoloadOptions = {}) {
 				// @ts-expect-error
 				plugin.group(url, groupOptions, importedValue);
 			else
-				// @ts-expect-error
+			// @ts-expect-error
 				plugin.group(url, groupOptions, (app) => app.use(importedValue()));
 		else if (importedValue instanceof Elysia)
 			// @ts-expect-error
