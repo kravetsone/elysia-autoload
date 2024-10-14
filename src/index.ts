@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
+import { pathToFileURL } from "node:url";
 import {
 	type BaseMacro,
 	Elysia,
@@ -13,6 +14,7 @@ import {
 	addRelativeIfNotDot,
 	fixSlashes,
 	getPath,
+	importFile,
 	sortByNestedParams,
 	transformToUrl,
 } from "./utils";
@@ -122,7 +124,7 @@ export async function autoload(options: AutoloadOptions = {}) {
 
 	const files = typeof Bun === "undefined"
 		? fs.globSync(globPattern, globOptions)
-		: await Array.fromAsync((new Bun.Glob(globPattern)).scan(globOptions));
+		: await Array.fromAsync(new Bun.Glob(globPattern).scan(globOptions));
 	if (failGlob && files.length === 0)
 		throw new Error(
 			`No matches found in ${directoryPath}. You can disable this error by setting the failGlob parameter to false in the options of autoload plugin`,
@@ -132,8 +134,12 @@ export async function autoload(options: AutoloadOptions = {}) {
 
 	for (const filePath of sortByNestedParams(files)) {
 		const fullPath = path.join(directoryPath, filePath);
-
-		const file = await import(fullPath);
+		const extension = path.extname(filePath)
+		let file
+		if (typeof Bun === 'undefined')
+			file = (extension === '.ts' || extension === '.tsx')
+				? await importFile(fullPath)
+				: await import(pathToFileURL(fullPath).href);
 
 		const importName =
 			typeof getImportName === "string" ? getImportName : getImportName(file);

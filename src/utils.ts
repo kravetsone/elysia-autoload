@@ -1,4 +1,6 @@
+import fs from "node:fs";
 import path from "node:path";
+import { pathToFileURL } from "node:url";
 
 export function getPath(dir: string) {
     if (path.isAbsolute(dir)) return dir;
@@ -50,3 +52,61 @@ export function addRelativeIfNotDot(path: string) {
 
     return path;
 }
+
+//#region https://github.com/vikejs/vike/blob/main/vike/utils/getRandomId.ts
+function getRandomId(length: number): string {
+    let randomId = "";
+    while (randomId.length < length) {
+        randomId += Math.random().toString(36).slice(2);
+    }
+    return randomId.slice(0, length);
+}
+//#endregion
+
+//#region https://github.com/vikejs/vike/blob/main/vike/node/plugin/plugins/importUserCode/v1-design/getVikeConfig/transpileAndExecuteFile.ts
+/**
+ * Transpile a file with esbuild
+ */
+async function transpileWithEsbuild(filePath: string): Promise<string> {
+    const esbuild = await import("esbuild");
+    const result = await esbuild.build({
+        platform: "node",
+        entryPoints: [filePath],
+        write: false,
+        target: ["esnext"],
+        logLevel: "silent",
+        format: "esm",
+        absWorkingDir: process.cwd(),
+        bundle: true,
+    });
+
+    return result.outputFiles[0].text;
+}
+
+/**
+ * Get a temporary file path
+ */
+function getTemporaryBuildFilePath(filePathAbsoluteFilesystem: string): string {
+    const dirname = path.posix.dirname(filePathAbsoluteFilesystem);
+    const filename = path.posix.basename(filePathAbsoluteFilesystem);
+    return path.posix.join(dirname, `${filename}.build-${getRandomId(12)}.mjs`);
+}
+
+/**
+ * Execute a file
+ * Old function name: `executeTranspiledFile`
+ */
+export async function importFile(
+    filePath: string,
+): Promise<Record<string, unknown>> {
+    const code = await transpileWithEsbuild(filePath);
+    const filePathTmp = getTemporaryBuildFilePath(filePath);
+    fs.writeFileSync(filePathTmp, code);
+    try {
+        return await import(pathToFileURL(filePathTmp).href);
+    } finally {
+        // Clean
+        fs.unlinkSync(filePathTmp);
+    }
+}
+//#endregion
