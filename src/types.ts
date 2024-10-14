@@ -13,7 +13,7 @@ type PathToObject<
 namespace ElysiaMatch {
 	export type RouteEnd = Record<string, RouteSchema>;
 
-	export type Fx = (...args: any[]) => AnyElysia;
+	export type Fx = (...args: unknown[]) => AnyElysia;
 	export type All = AnyElysia | Fx;
 
 	export type Extract<T extends All> = T extends Fx ? ReturnType<T> : T;
