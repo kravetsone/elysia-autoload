@@ -195,9 +195,8 @@ export async function autoload(options: AutoloadOptions = {}) {
 					.map(
 						([x], index) =>
 							`ElysiaWithBaseUrl<"${
-								(
-									(prefix?.endsWith("/") ? prefix.slice(0, -1) : prefix) ?? ""
-								) + transformToUrl(x) || "/"
+								((prefix?.endsWith("/") ? prefix.slice(0, -1) : prefix) ?? "") +
+									transformToUrl(x) || "/"
 							}", typeof Route${index}>`,
 					)
 					.join("\n              & ")}`,

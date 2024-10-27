@@ -57,11 +57,11 @@ export function addRelativeIfNotDot(path: string) {
 
 //#region https://github.com/vikejs/vike/blob/main/vike/utils/getRandomId.ts
 function getRandomId(length: number): string {
-    let randomId = "";
-    while (randomId.length < length) {
-        randomId += Math.random().toString(36).slice(2);
-    }
-    return randomId.slice(0, length);
+	let randomId = "";
+	while (randomId.length < length) {
+		randomId += Math.random().toString(36).slice(2);
+	}
+	return randomId.slice(0, length);
 }
 //#endregion
 
@@ -70,28 +70,28 @@ function getRandomId(length: number): string {
  * Transpile a file with esbuild
  */
 async function transpileWithEsbuild(filePath: string): Promise<string> {
-    const esbuild = await import("esbuild");
-    const result = await esbuild.build({
-        platform: "node",
-        entryPoints: [filePath],
-        write: false,
-        target: ["esnext"],
-        logLevel: "silent",
-        format: "esm",
-        absWorkingDir: process.cwd(),
-        bundle: true,
-    });
+	const esbuild = await import("esbuild");
+	const result = await esbuild.build({
+		platform: "node",
+		entryPoints: [filePath],
+		write: false,
+		target: ["esnext"],
+		logLevel: "silent",
+		format: "esm",
+		absWorkingDir: process.cwd(),
+		bundle: true,
+	});
 
-    return result.outputFiles[0].text;
+	return result.outputFiles[0].text;
 }
 
 /**
  * Get a temporary file path
  */
 function getTemporaryBuildFilePath(filePathAbsoluteFilesystem: string): string {
-    const dirname = path.posix.dirname(filePathAbsoluteFilesystem);
-    const filename = path.posix.basename(filePathAbsoluteFilesystem);
-    return path.posix.join(dirname, `${filename}.build-${getRandomId(12)}.mjs`);
+	const dirname = path.posix.dirname(filePathAbsoluteFilesystem);
+	const filename = path.posix.basename(filePathAbsoluteFilesystem);
+	return path.posix.join(dirname, `${filename}.build-${getRandomId(12)}.mjs`);
 }
 
 /**
@@ -99,16 +99,16 @@ function getTemporaryBuildFilePath(filePathAbsoluteFilesystem: string): string {
  * Old function name: `executeTranspiledFile`
  */
 export async function importFile(
-    filePath: string,
+	filePath: string,
 ): Promise<Record<string, unknown>> {
-    const code = await transpileWithEsbuild(filePath);
-    const filePathTmp = getTemporaryBuildFilePath(filePath);
-    fs.writeFileSync(filePathTmp, code);
-    try {
-        return await import(pathToFileURL(filePathTmp).href);
-    } finally {
-        // Clean
-        fs.unlinkSync(filePathTmp);
-    }
+	const code = await transpileWithEsbuild(filePath);
+	const filePathTmp = getTemporaryBuildFilePath(filePath);
+	fs.writeFileSync(filePathTmp, code);
+	try {
+		return await import(pathToFileURL(filePathTmp).href);
+	} finally {
+		// Clean
+		fs.unlinkSync(filePathTmp);
+	}
 }
 //#endregion
