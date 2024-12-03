@@ -14,7 +14,6 @@ import {
 	addRelativeIfNotDot,
 	fixSlashes,
 	getPath,
-	importFile,
 	sortByNestedParams,
 	transformToUrl,
 } from "./utils";
@@ -135,13 +134,7 @@ export async function autoload(options: AutoloadOptions = {}) {
 
 	for (const filePath of sortByNestedParams(files)) {
 		const fullPath = path.join(directoryPath, filePath);
-		const extension = path.extname(filePath);
-		let file;
-		if (typeof Bun === "undefined")
-			file =
-				extension === ".ts" || extension === ".tsx"
-					? await importFile(fullPath)
-					: await import(pathToFileURL(fullPath).href);
+		const file = await import(pathToFileURL(fullPath).href);
 
 		const importName =
 			typeof getImportName === "string" ? getImportName : getImportName(file);

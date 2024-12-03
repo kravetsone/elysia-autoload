@@ -43,13 +43,7 @@
 		"typescript": "^5.6.2"
 	},
 	"peerDependencies": {
-		"elysia": "^1.1.0",
-		"esbuild": "*"
-	},
-	"peerDependenciesMeta": {
-		"esbuild": {
-			"optional": true
-		}
+		"elysia": "^1.1.0"
 	},
 	"engines": {
 		"node": ">=22"
