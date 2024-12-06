@@ -1,5 +1,14 @@
 # elysia-autoload
 
+<div align="center">
+
+[![npm](https://img.shields.io/npm/v/elysia-autoload?logo=npm&style=flat&labelColor=000&color=3b82f6)](https://www.npmjs.org/package/elysia-autoload)
+[![npm downloads](https://img.shields.io/npm/dw/elysia-autoload?logo=npm&style=flat&labelColor=000&color=3b82f6)](https://www.npmjs.org/package/elysia-autoload)
+<!-- [![JSR](https://jsr.io/badges/elysia-autoload)](https://jsr.io/elysia-autoload)
+[![JSR Score](https://jsr.io/badges/elysia-autoload/score)](https://jsr.io/elysia-autoload) -->
+
+</div>
+
 Plugin for [Elysia](https://elysiajs.com/) which autoload all routes in directory and code-generate types for [Eden](https://elysiajs.com/eden/overview.html) with [`Bun.build`](#bun-build-usage) support!
 
 ## Installation
