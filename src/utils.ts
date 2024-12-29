@@ -1,3 +1,4 @@
+import fs from "node:fs";
 import path from "node:path";
 
 export function getPath(dir: string) {
@@ -51,4 +52,12 @@ export function addRelativeIfNotDot(path: string) {
 	if (path.at(0) !== ".") return `./${path}`;
 
 	return path;
+}
+
+export const IS_BUN = typeof Bun === "undefined";
+
+export function globSync(globPattern: string, globOptions: { cwd?: string }) {
+	return IS_BUN
+		? Array.from(new Bun.Glob(globPattern).scanSync(globOptions))
+		: fs.globSync(globPattern, globOptions);
 }
