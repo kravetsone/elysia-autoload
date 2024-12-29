@@ -54,7 +54,7 @@ export function addRelativeIfNotDot(path: string) {
 	return path;
 }
 
-export const IS_BUN = typeof Bun === "undefined";
+export const IS_BUN = typeof Bun !== "undefined";
 
 export function globSync(globPattern: string, globOptions: { cwd?: string }) {
 	return IS_BUN
