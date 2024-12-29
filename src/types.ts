@@ -38,7 +38,7 @@ export type ElysiaWithBaseUrl<
 	ElysiaType extends ElysiaMatch.All,
 > = ElysiaMatch.Extract<ElysiaType> extends Elysia<
 	infer BasePath,
-	infer Scoped,
+	// infer Scoped,
 	infer Singleton,
 	infer Definitions,
 	infer Metadata,
@@ -48,7 +48,7 @@ export type ElysiaWithBaseUrl<
 >
 	? Elysia<
 			BasePath,
-			Scoped,
+			// Scoped,
 			Singleton,
 			Definitions,
 			Metadata,
