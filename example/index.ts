@@ -7,7 +7,7 @@ const prefix = "/api/" as const;
 
 export const app = new Elysia({
 	prefix: "/test",
-	adapter: node(),
+	// adapter: node(),
 })
 	.use(swagger())
 	.use(
@@ -25,6 +25,7 @@ await app.modules;
 app.listen(3002, () =>
 	console.log(
 		"started",
+		"http://localhost:3002/test/api",
 		app.routes.map((x) => x.path),
 	),
 );
