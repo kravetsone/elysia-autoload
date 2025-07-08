@@ -61,3 +61,30 @@ export function globSync(globPattern: string, globOptions: { cwd?: string }) {
 		? Array.from(new Bun.Glob(globPattern).scanSync(globOptions))
 		: fs.globSync(globPattern, globOptions);
 }
+
+export function matchesPattern(filePath: string, pattern: string): boolean {
+	if (IS_BUN) {
+		const glob = new Bun.Glob(pattern);
+		return glob.match(filePath);
+	}
+	// For Node.js, we'll use minimatch-style pattern matching
+	// First escape special regex characters except glob characters
+	let regexPattern = pattern
+		.replace(/[.+^${}()|[\]\\]/g, "\\$&")
+		.replace(/\\\*/g, "*")
+		.replace(/\\\?/g, "?");
+
+	// Then convert glob patterns to regex
+	regexPattern = regexPattern
+		.replace(/\*\*/g, "§§§")
+		.replace(/\*/g, "[^/]*")
+		.replace(/§§§/g, ".*")
+		.replace(/\?/g, ".")
+		.replace(/\{([^}]+)\}/g, (_: string, group: string) => {
+			const options = group.split(",").map((s) => s.trim());
+			return `(${options.join("|")})`;
+		});
+
+	const regex = new RegExp(`^${regexPattern}$`);
+	return regex.test(filePath);
+}
