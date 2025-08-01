@@ -1,6 +1,6 @@
 {
 	"name": "elysia-autoload",
-	"version": "1.5.2",
+	"version": "1.6.0",
 	"author": "kravetsone",
 	"type": "module",
 	"types": "./dist/index.d.ts",
