@@ -2,7 +2,7 @@ import { describe, expect, test } from "bun:test";
 import { edenFetch } from "@elysiajs/eden";
 import { Elysia } from "elysia";
 import { autoload } from "../src/index";
-import { sortByNestedParams, transformToUrl } from "../src/utils";
+import { matchesPattern, sortByNestedParams, transformToUrl } from "../src/utils";
 
 // const app_with_prefix = new Elysia({
 // 	prefix: "/api", // BROKEN FOR NOW
@@ -89,6 +89,44 @@ describe("sortByNestedParams", () => {
 
     test("Verify Intellisense", () => {
         // const request = fetcher("", {});
+    });
+});
+
+describe("matchesPattern", () => {
+    test("matches exact filename", () => {
+        expect(matchesPattern("test.ts", "test.ts")).toBe(true);
+        expect(matchesPattern("test.ts", "other.ts")).toBe(false);
+    });
+
+    test("matches wildcard patterns", () => {
+        expect(matchesPattern("test.ts", "*.ts")).toBe(true);
+        expect(matchesPattern("test.js", "*.ts")).toBe(false);
+        expect(matchesPattern("path/to/test.ts", "**/test.ts")).toBe(true);
+        expect(matchesPattern("path/to/file.ts", "**/*.ts")).toBe(true);
+    });
+
+    test("matches glob patterns with directories", () => {
+        expect(matchesPattern("src/test.ts", "src/*.ts")).toBe(true);
+        expect(matchesPattern("src/nested/test.ts", "src/*.ts")).toBe(false);
+        expect(matchesPattern("src/nested/test.ts", "src/**/*.ts")).toBe(true);
+    });
+
+    test("matches patterns with extensions", () => {
+        expect(matchesPattern("test.spec.ts", "*.spec.ts")).toBe(true);
+        expect(matchesPattern("test.test.ts", "*.test.ts")).toBe(true);
+        expect(matchesPattern("test.spec.ts", "*.test.ts")).toBe(false);
+    });
+
+    test("matches patterns with multiple extensions", () => {
+        expect(matchesPattern("test.ts", "*.{ts,js}")).toBe(true);
+        expect(matchesPattern("test.js", "*.{ts,js}")).toBe(true);
+        expect(matchesPattern("test.py", "*.{ts,js}")).toBe(false);
+    });
+
+    test("matches nested wildcard patterns", () => {
+        expect(matchesPattern("src/components/Button.test.ts", "**/*.test.ts")).toBe(true);
+        expect(matchesPattern("src/components/Button.spec.ts", "**/*.spec.ts")).toBe(true);
+        expect(matchesPattern("src/components/Button.ts", "**/*.test.ts")).toBe(false);
     });
 });
 

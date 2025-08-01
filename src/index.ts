@@ -15,6 +15,7 @@ import {
 	fixSlashes,
 	getPath,
 	globSync,
+	matchesPattern,
 	sortByNestedParams,
 	transformToUrl,
 } from "./utils";
@@ -68,6 +69,10 @@ export interface AutoloadOptions {
 	 * @default false
 	 */
 	skipImportErrors?: boolean;
+	/**
+	 * Glob pattern(s) to ignore when discovering files
+	 */
+	ignore?: string | string[];
 }
 
 const DIR_ROUTES_DEFAULT = "./routes";
@@ -79,7 +84,7 @@ const TYPES_OBJECT_DEFAULT = {
 } satisfies TypesOptions;
 
 export async function autoload(options: AutoloadOptions = {}) {
-	const { pattern, prefix, schema } = options;
+	const { pattern, prefix, schema, ignore } = options;
 	const failGlob = options.failGlob ?? true;
 	const getImportName = options?.import ?? "default";
 
@@ -116,13 +121,25 @@ export async function autoload(options: AutoloadOptions = {}) {
 			dir,
 			prefix,
 			types,
+			ignore,
 		},
 	});
 
 	const globPattern = pattern || "**/*.{ts,tsx,js,jsx,mjs,cjs}";
 	const globOptions = { cwd: directoryPath };
 
-	const files = globSync(globPattern, globOptions);
+	let files = globSync(globPattern, globOptions);
+
+	// Filter out ignored files
+	if (ignore) {
+		const ignorePatterns = Array.isArray(ignore) ? ignore : [ignore];
+		files = files.filter((filePath) => {
+			return !ignorePatterns.some((pattern) =>
+				matchesPattern(filePath, pattern),
+			);
+		});
+	}
+
 	if (failGlob && files.length === 0)
 		throw new Error(
 			`No matches found in ${directoryPath}. You can disable this error by setting the failGlob parameter to false in the options of autoload plugin`,

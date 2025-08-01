@@ -41,6 +41,26 @@ const app = new Elysia().use(await autoload()).listen(3000);
 export type ElysiaApp = typeof app;
 ```
 
+### With custom options
+
+```ts
+import { Elysia } from "elysia";
+import { autoload } from "elysia-autoload";
+
+const app = new Elysia()
+    .use(
+        await autoload({
+            dir: "./routes",
+            prefix: "/api",
+            // Ignore test files and spec files
+            ignore: ["**/*.test.ts", "**/*.spec.ts"]
+        })
+    )
+    .listen(3000);
+
+export type ElysiaApp = typeof app;
+```
+
 > [!IMPORTANT]
 > We strictly recommend use `await` when registering plugin
 >
@@ -99,6 +119,7 @@ Guide how `elysia-autoload` match routes
 | prefix?  | string                                     |                                    | Prefix for routes                                                                   |
 | types?   | boolean \| [Types Options](#types-options) | false                              | Options to configure type code-generation. if boolean - enables/disables generation |
 | schema?  | Function                                   |                                    | Handler for providing routes guard schema                                           |
+| ignore?  | string \| string[]                         |                                    | Glob pattern(s) to ignore when discovering files                                    |
 
 ### Types Options
 
