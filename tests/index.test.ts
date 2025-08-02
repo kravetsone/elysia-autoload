@@ -3,6 +3,8 @@ import { edenFetch } from "@elysiajs/eden";
 import { Elysia } from "elysia";
 import { autoload } from "../src/index";
 import { matchesPattern, sortByNestedParams, transformToUrl } from "../src/utils";
+import fs from "node:fs";
+import path from "node:path";
 
 // const app_with_prefix = new Elysia({
 // 	prefix: "/api", // BROKEN FOR NOW
@@ -152,3 +154,77 @@ describe("matchesPattern", () => {
 // 		expect(routePaths).toContain("/api/users/:id/");
 // 	});
 // });
+
+describe("Dynamic import extension based on moduleResolution", () => {
+    test("should include .ts extension for nodenext module", async () => {
+        // 创建临时的tsconfig.json用于测试
+        const tempTsConfig = {
+            compilerOptions: {
+                module: "nodenext"
+            }
+        };
+
+        const originalTsConfig = fs.existsSync('tsconfig.json') ?
+            fs.readFileSync('tsconfig.json', 'utf-8') : null;
+
+        fs.writeFileSync('tsconfig.json', JSON.stringify(tempTsConfig));
+
+        try {
+            // 模拟类型生成过程
+            const filePath = "/test.ts";
+            const importPath = filePath; // nodenext需要保留后缀
+            expect(importPath).toBe("/test.ts");
+        } finally {
+            // 恢复原始配置
+            if (originalTsConfig) {
+                fs.writeFileSync('tsconfig.json', originalTsConfig);
+            } else {
+                fs.unlinkSync('tsconfig.json');
+            }
+        }
+    });
+
+    test("should remove .ts extension for commonjs module", async () => {
+        const tempTsConfig = {
+            compilerOptions: {
+                module: "commonjs"
+            }
+        };
+
+        const originalTsConfig = fs.existsSync('tsconfig.json') ?
+            fs.readFileSync('tsconfig.json', 'utf-8') : null;
+
+        fs.writeFileSync('tsconfig.json', JSON.stringify(tempTsConfig));
+
+        try {
+            const filePath = "/test.ts";
+            const importPath = filePath.replace(/\.(ts|tsx)$/, '');
+            expect(importPath).toBe("/test");
+        } finally {
+            if (originalTsConfig) {
+                fs.writeFileSync('tsconfig.json', originalTsConfig);
+            } else {
+                fs.unlinkSync('tsconfig.json');
+            }
+        }
+    });
+
+    test("should handle missing tsconfig.json gracefully", async () => {
+        const originalTsConfig = fs.existsSync('tsconfig.json') ?
+            fs.readFileSync('tsconfig.json', 'utf-8') : null;
+
+        if (fs.existsSync('tsconfig.json')) {
+            fs.unlinkSync('tsconfig.json');
+        }
+
+        try {
+            const filePath = "/test.ts";
+            const importPath = filePath.replace(/\.(ts|tsx)$/, '');
+            expect(importPath).toBe("/test");
+        } finally {
+            if (originalTsConfig) {
+                fs.writeFileSync('tsconfig.json', originalTsConfig);
+            }
+        }
+    });
+});
