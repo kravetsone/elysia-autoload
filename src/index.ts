@@ -182,16 +182,41 @@ export async function autoload(options: AutoloadOptions = {}) {
 		for await (const outputPath of types.output) {
 			const outputAbsolutePath = getPath(outputPath);
 
+			// 检测用户的moduleResolution设置来决定是否保留.ts后缀
+			const getImportPath = (filePath: string) => {
+				try {
+					const tsConfigPath = path.join(process.cwd(), 'tsconfig.json');
+					if (fs.existsSync(tsConfigPath)) {
+						const tsConfig = JSON.parse(fs.readFileSync(tsConfigPath, 'utf-8'));
+						const module = tsConfig.compilerOptions?.module?.toLowerCase();
+						const moduleResolution = tsConfig.compilerOptions?.moduleResolution?.toLowerCase();
+						
+						// NodeNext, nodenext, esnext等需要后缀
+						const needsExtension = module === 'nodenext' || 
+							module === 'node16' || 
+							moduleResolution === 'nodenext' || 
+							moduleResolution === 'node16';
+						
+						return needsExtension ? filePath : filePath.replace(/\.(ts|tsx)$/, '');
+					}
+				} catch {
+					// 如果读取失败，默认移除后缀以保持向后兼容
+				}
+				return filePath.replace(/\.(ts|tsx)$/, '');
+			};
+
 			const imports: string[] = paths.map(
-				([x, exportName], index) =>
-					`import type ${exportName === "default" ? `Route${index}` : `{ ${exportName} as Route${index} }`} from "${addRelativeIfNotDot(
+				([x, exportName], index) => {
+					const importPath = getImportPath(x);
+					return `import type ${exportName === "default" ? `Route${index}` : `{ ${exportName} as Route${index} }`} from "${addRelativeIfNotDot(
 						path
 							.relative(
 								path.dirname(outputAbsolutePath),
-								directoryPath + x.replace(/\.(ts|tsx)$/, ""),
+								directoryPath + importPath,
 							)
 							.replaceAll("\\", "/"),
-					)}";`,
+					)}";`;
+				},
 			);
 
 			const input = [
