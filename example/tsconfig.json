@@ -1,0 +1,17 @@
+{
+	"compilerOptions": {
+		"lib": ["ESNext"],
+		"module": "NodeNext",
+		"target": "esnext",
+		"declaration": true,
+		"moduleDetection": "force",
+		"strict": true,
+		"downlevelIteration": true,
+		"skipLibCheck": true,
+		"jsx": "react-jsx",
+		"allowSyntheticDefaultImports": true,
+		"forceConsistentCasingInFileNames": true,
+		"rootDir": "./",
+		"outDir": "./dist"
+	}
+}
