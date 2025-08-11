@@ -73,6 +73,50 @@ export interface AutoloadOptions {
 	 * Glob pattern(s) to ignore when discovering files
 	 */
 	ignore?: string | string[];
+	/**
+	 * Path to tsconfig.json file for module resolution detection
+	 * @default "tsconfig.json"
+	 */
+	tsconfigPath?: string;
+}
+
+/**
+ * Check if TypeScript extensions should be kept based on tsconfig.json settings
+ * @param tsconfigPath - Optional path to tsconfig.json file
+ * @returns Promise<boolean> - true if extensions should be kept
+ */
+async function shouldKeepTsExtension(tsconfigPath?: string): Promise<boolean> {
+	try {
+		const configPath = tsconfigPath
+			? path.resolve(tsconfigPath)
+			: path.join(process.cwd(), "tsconfig.json");
+
+		// Support both Bun and Node.js environments
+		let fileContent: string;
+		if (typeof Bun === "undefined") {
+			// Node.js environment
+			fileContent = fs.readFileSync(configPath, "utf-8");
+		} else {
+			// Bun environment
+			fileContent = await Bun.file(configPath).text();
+		}
+
+		const tsConfig = JSON.parse(fileContent);
+
+		const moduleOption = (tsConfig.compilerOptions?.module || "").toLowerCase();
+		const moduleResolutionOption = (
+			tsConfig.compilerOptions?.moduleResolution || ""
+		).toLowerCase();
+
+		return (
+			moduleOption === "nodenext" ||
+			moduleOption === "node16" ||
+			moduleResolutionOption === "nodenext" ||
+			moduleResolutionOption === "node16"
+		);
+	} catch (error) {
+		return false;
+	}
 }
 
 const DIR_ROUTES_DEFAULT = "./routes";
@@ -84,7 +128,7 @@ const TYPES_OBJECT_DEFAULT = {
 } satisfies TypesOptions;
 
 export async function autoload(options: AutoloadOptions = {}) {
-	const { pattern, prefix, schema, ignore } = options;
+	const { pattern, prefix, schema, ignore, tsconfigPath } = options;
 	const failGlob = options.failGlob ?? true;
 	const getImportName = options?.import ?? "default";
 
@@ -179,20 +223,25 @@ export async function autoload(options: AutoloadOptions = {}) {
 	}
 
 	if (types) {
+		// Parse tsconfig.json once outside the loop to avoid repeated file reads
+		const needsExtension = await shouldKeepTsExtension(tsconfigPath);
 		for await (const outputPath of types.output) {
 			const outputAbsolutePath = getPath(outputPath);
 
-			const imports: string[] = paths.map(
-				([x, exportName], index) =>
-					`import type ${exportName === "default" ? `Route${index}` : `{ ${exportName} as Route${index} }`} from "${addRelativeIfNotDot(
-						path
-							.relative(
-								path.dirname(outputAbsolutePath),
-								directoryPath + x.replace(/\.(ts|tsx)$/, ""),
-							)
-							.replaceAll("\\", "/"),
-					)}";`,
-			);
+			const imports: string[] = paths.map(([filePath, exportName], index) => {
+				const importPath = needsExtension
+					? filePath
+					: filePath.replace(/\.(ts|tsx)$/, "");
+
+				return `import type ${exportName === "default" ? `Route${index}` : `{ ${exportName} as Route${index} }`} from "${addRelativeIfNotDot(
+					path
+						.relative(
+							path.dirname(outputAbsolutePath),
+							path.join(directoryPath, importPath),
+						)
+						.replaceAll("\\", "/"),
+				)}";`;
+			});
 
 			const input = [
 				`import type { ElysiaWithBaseUrl } from "elysia-autoload";`,
