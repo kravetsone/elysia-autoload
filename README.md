@@ -256,3 +256,69 @@ export type ElysiaApp = typeof app;
 
 app.listen(3001, console.log);
 ```
+
+Projects created with ElysiaJS
+
+<img width="363" height="599" alt="image" src="https://github.com/user-attachments/assets/c4c61996-c4ee-4163-8ef6-ed2d8d302190" />
+
+Use autoload as follows
+
+```ts
+  .use(
+    // @ts-ignore
+    await autoload({
+      dir: "routes",
+      pattern: "**/*.{ts,tsx}",
+      // Disable type generation in executable files to avoid permission issues  !!types may cause the packaged exe to lack route path issues, so it is commented out
+      // types: {
+      //   output: "types/routes.ts",
+      //   typeName: "Route",
+      // },
+      ignore: [
+        "**/*.model.ts",
+      ],
+      tsconfigPath: "./tsconfig.json",
+      // @ts-ignore
+      schema: ({ path, url, detail }) => {
+        // Extract the module name from the URL as a label
+        const segments = url.split("/").filter(Boolean);
+        const moduleName = segments[0] || "system";
+        const defaultTag =
+          moduleName.charAt(0).toUpperCase() + moduleName.slice(1);
+
+        // Merge the detail configuration in the routing file
+        return {
+          detail: {
+            ...detail,
+            tags: detail?.tags || [defaultTag],
+            description: detail?.description || `${defaultTag} 模块 - 自动加载自 ${path}`,
+            operationId: detail?.operationId || `${moduleName}_${path.split('/').pop()?.replace('.ts', '')}`,
+          },
+        };
+      },
+    }),
+  )
+```
+
+build 如下：
+```ts
+#build.ts
+#autoload  come form `esbuild-plugin-autoload`
+ await Bun.build({
+      entrypoints: "./src/index.ts",
+      target: "bun",
+      outdir: "dist",
+      plugins: [
+        autoload({
+          directory: process.cwd() + "/src/routes",
+          pattern: ["**/*.{ts,tsx}", "!**/*.model.ts"],
+          debug: false,
+        }),
+      ],
+    });
+  await Bun.$`bun build --compile dist/index.js --outfile dist.exe`;
+```
+
+
+
+
